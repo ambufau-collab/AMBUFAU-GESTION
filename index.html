@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b6b4f">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Powerful">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Powerful Pharmagest – Gestion de pharmacie</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700&display=swap">
+<style>
+:root{--bg:#f2f6f4;--card:#fff;--ink:#14231d;--mut:#5b6b64;--line:#d9e3de;--pri:#0b6b4f;--pri-ink:#fff;--warn:#a85d00;--warn-bg:#fff1dc;--bad:#b3261e;--bad-bg:#fde8e6;--ok-bg:#e1f3ea;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1814;--card:#16251f;--ink:#e6f0eb;--mut:#92a69d;--line:#27382f;--pri:#3fbf93;--pri-ink:#07251a;--warn:#f0b35a;--warn-bg:#3a2a10;--bad:#ff8a80;--bad-bg:#3d1b18;--ok-bg:#12382a}}
+:root[data-theme="dark"]{--bg:#0e1814;--card:#16251f;--ink:#e6f0eb;--mut:#92a69d;--line:#27382f;--pri:#3fbf93;--pri-ink:#07251a;--warn:#f0b35a;--warn-bg:#3a2a10;--bad:#ff8a80;--bad-bg:#3d1b18;--ok-bg:#12382a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.45 Figtree,system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:720px;margin:0 auto;padding:0 14px 40px}
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 0 10px}
+h1{font-size:22px;margin:0;font-weight:700;letter-spacing:-.01em}
+select,input{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:9px 10px;min-height:42px;width:100%}
+select{width:auto}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--pri);outline-offset:1px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5}
+.tabs button{flex:1;background:none;border:0;border-bottom:3px solid transparent;padding:12px 8px;white-space:nowrap;font:600 14px Figtree,system-ui,sans-serif;color:var(--mut);cursor:pointer}
+.tabs button[aria-selected=true]{color:var(--pri);border-bottom-color:var(--pri)}
+section{padding-top:14px}
+.btn{background:var(--pri);color:var(--pri-ink);border:0;border-radius:8px;padding:10px 14px;font:600 15px Figtree,system-ui,sans-serif;cursor:pointer;min-height:42px}
+.btn.ghost{background:none;color:var(--pri);border:1px solid var(--line)}
+.btn.sm{padding:6px 10px;min-height:34px;font-size:14px}
+.btn.danger{color:var(--bad)}
+.row{display:flex;gap:8px;align-items:center}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:6px 12px;font:600 14px Figtree,system-ui,sans-serif;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--pri);color:var(--pri-ink);border-color:var(--pri)}
+.item{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:8px}
+.item .top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.item b{font-weight:700}
+.meta{color:var(--mut);font-size:14px}
+.tag{display:inline-block;font-size:13px;font-weight:600;border-radius:6px;padding:2px 8px;margin-right:4px;background:var(--ok-bg);color:var(--pri)}
+.tag.warn{background:var(--warn-bg);color:var(--warn)}
+.tag.bad{background:var(--bad-bg);color:var(--bad)}
+.acts{display:flex;gap:6px;margin-top:10px}
+.empty{text-align:center;color:var(--mut);padding:30px 10px}
+.total{display:flex;justify-content:space-between;font-size:20px;font-weight:700;margin:14px 0}
+.stat{display:flex;gap:10px;margin-bottom:12px}
+.stat div{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px}
+.stat strong{display:block;font-size:20px}
+dialog{border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);padding:18px;width:min(92vw,420px)}
+dialog{max-height:calc(100dvh - 16px);overflow-y:auto}.stk{position:sticky;bottom:-18px;background:var(--card);padding:10px 0 6px;margin-top:10px}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+label{display:block;font-size:14px;font-weight:600;margin:10px 0 4px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
+#toast.on{opacity:1}
+.hide{display:none!important}
+#inv{width:min(94vw,460px)}#invc table{width:100%;border-collapse:collapse;margin-top:8px}#invc th,#invc td{padding:6px 4px;border-bottom:1px solid var(--line);text-align:left;font-size:14px}#invc .r{text-align:right}#invc hr{border:0;border-top:1px solid var(--line);margin:10px 0}
+@media print{:root{padding:0}body{background:#fff}.wrap,#toast,#dlg,#sdlg,.noprint{display:none!important}#inv{position:static;border:0;width:100%;color:#000;background:#fff;padding:0}}
+.tabs{overflow-x:auto}.line{display:flex;justify-content:space-between;gap:8px;padding:6px 0;font-size:17px}.pos{color:var(--pri)}.neg{color:var(--bad)}header{flex-wrap:wrap}
+
+@media (min-width:900px){
+ body{font-size:17px}
+ .wrap{max-width:none;padding:0 clamp(24px,3vw,56px) 56px}
+ #lg.wrap{max-width:480px}
+ header{padding:22px 0 14px}
+ h1{font-size:30px}
+ .tabs button{flex:0 0 auto;padding:16px 28px;font-size:16px}
+ #stock>.row{max-width:820px}
+ #q2,#q3{max-width:820px}
+ #list,#hl,#rl,#rfound,#found{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:12px;align-items:start}
+ #list>.item,#hl>.item,#rl>.item,#rfound>.item,#found>.item{margin-bottom:0}
+ #list>.empty,#hl>.empty,#rl>.empty,#rfound>.empty,#found>.empty{grid-column:1/-1}
+ #vente{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(380px,1fr);column-gap:36px;align-items:start}
+ #vente>#q2{grid-column:1;grid-row:1}
+ #vente>#found{grid-column:1;grid-row:2;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+ #vente>h2{grid-column:2;grid-row:1;margin:0 0 8px}
+ #vente>#cart{grid-column:2;grid-row:2;position:sticky;top:80px}
+ #rcart{max-width:820px}
+ #achats .stat,#histo .stat{max-width:680px}
+ #bilan,#equipe,#apropos{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:12px;align-items:start}
+ #bilan.hide,#equipe.hide,#apropos.hide,#vente.hide{display:none!important}
+ #bilan>*,#equipe>*,#apropos>*{margin-bottom:0}
+ #bilan>h2,#bilan>.chips,#bilan>.stat,#equipe>h2,#apropos>h2{grid-column:1/-1}
+ #apropos>.item:first-child{grid-column:1/-1}
+ dialog{width:min(92vw,520px)}
+}
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+<header>
+  <div><h1 style="font-size:24px">Powerful Pharmagest</h1><div class="meta" id="who"></div><div class="meta" id="sync"></div></div>
+  <div class="row"><button class="btn ghost sm adm" id="set">Réglages</button><button class="btn ghost sm" id="mypin">Mon PIN</button><button class="btn ghost sm" id="out">Déconnexion</button></div>
+</header>
+<div class="tabs" role="tablist">
+  <button role="tab" data-t="stock" aria-selected="true">Stock</button>
+  <button role="tab" data-t="vente" aria-selected="false">Vente</button>
+  <button role="tab" data-t="histo" aria-selected="false">Historique</button>
+  <button role="tab" class="adm" data-t="achats" aria-selected="false">Achats</button>
+  <button role="tab" class="adm" data-t="inventaire" aria-selected="false">Inventaire</button>
+  <button role="tab" class="adm" data-t="bilan" aria-selected="false">Bilan</button>
+  <button role="tab" class="adm" data-t="equipe" aria-selected="false">Équipe</button>
+  <button role="tab" class="adm" data-t="apropos" aria-selected="false">À propos</button>
+</div>
+
+<section id="stock">
+  <div class="row"><input id="q1" type="search" placeholder="Rechercher un médicament"><button class="btn adm" id="add">Ajouter</button></div>
+  <div class="chips" id="chips"></div>
+  <div id="list"></div>
+</section>
+
+<section id="vente" class="hide">
+  <input id="q2" type="search" placeholder="Rechercher un médicament à vendre">
+  <div id="found" style="margin-top:10px"></div>
+  <h2 style="font-size:17px;margin:18px 0 8px">Panier</h2>
+  <div id="cart"></div>
+</section>
+
+<section id="histo" class="hide">
+  <div class="stat"><div><span class="meta">Ventes aujourd'hui</span><strong id="hn">0</strong></div><div><span class="meta">Chiffre du jour</span><strong id="ht">0</strong></div></div>
+  <div id="hl"></div>
+</section>
+<section id="achats" class="hide">
+  <h2 style="font-size:17px;margin:4px 0 8px">Réapprovisionnement</h2>
+  <input id="q3" type="search" placeholder="Rechercher un médicament reçu">
+  <div id="rfound" style="margin-top:10px"></div>
+  <div id="rcart"></div>
+  <h2 style="font-size:17px;margin:22px 0 4px">Factures d'achat</h2>
+  <div class="chips" id="rchips"></div>
+  <div class="stat"><div><span class="meta" id="rnl">Achats</span><strong id="rn">0</strong></div><div><span class="meta">Total acheté</span><strong id="rt">0</strong></div></div>
+  <div id="rl"></div>
+</section>
+<section id="inventaire" class="hide"></section>
+<section id="bilan" class="hide"></section>
+<section id="equipe" class="hide"></section>
+<section id="apropos" class="hide">
+  <div class="item" style="text-align:center"><img src="logo-horizontal.png" alt="Powerful Pharmagest" style="max-width:100%;height:auto;border-radius:14px"><div class="meta" style="margin-top:8px">Version 1.0</div></div>
+  <div class="item"><b>À propos</b><div class="meta" style="margin-top:6px">Powerful Pharmagest est une application de gestion de pharmacie : stock, ventes, factures, achats, équipe et bilan, utilisable sur téléphone et sur ordinateur.</div></div>
+  <div class="item"><b>Ce que l'application sait faire</b>
+   <div style="margin-top:10px"><b style="font-size:15px">Stock</b><div class="meta">Liste de tous les médicaments avec prix et quantités, recherche rapide, alertes de stock bas, de rupture et de produits périmés. Ajout, modification et suppression, avec suggestions de noms pour éviter les doublons.</div></div>
+   <div style="margin-top:10px"><b style="font-size:15px">Vente et factures</b><div class="meta">Caisse avec panier et total, mise à jour automatique du stock. Une facture est créée à chaque vente : impression en PDF ou envoi par WhatsApp, et historique pour la retrouver.</div></div>
+   <div style="margin-top:10px"><b style="font-size:15px">Achats et réapprovisionnement</b><div class="meta">Ajout de la quantité reçue au stock, avec prix d'achat et date de péremption du nouveau lot. Factures d'achat du jour, des 7 ou 30 derniers jours.</div></div>
+   <div style="margin-top:10px"><b style="font-size:15px">Bilan</b><div class="meta">Ventes, coût d'achat et bénéfice par période, valeur du stock (prix d'achat et prix de vente) et comparaison avec le mois passé.</div></div>
+   <div style="margin-top:10px"><b style="font-size:15px">Équipe et sécurité</b><div class="meta">Comptes administrateur et caissier avec code PIN, invitation par lien ou e-mail, et historique des connexions (y compris les PIN incorrects).</div></div>
+   <div style="margin-top:10px"><b style="font-size:15px">Dollars et francs congolais</b><div class="meta">Prix affichés en $ ou en FC, avec un taux de change réglable.</div></div>
+   <div style="margin-top:10px"><b style="font-size:15px">Plusieurs appareils</b><div class="meta">Les données se synchronisent entre les téléphones et ordinateurs de la pharmacie. L'application s'ouvre même sans connexion, et les modifications sont envoyées dès le retour du réseau.</div></div>
+   <div style="margin-top:10px"><b style="font-size:15px">Sauvegarde</b><div class="meta">Sauvegarde et restauration de toutes les données en un fichier.</div></div>
+   <div style="margin-top:10px"><b style="font-size:15px">Installation</b><div class="meta">S'installe comme une application sur Android, iPhone et ordinateur.</div></div>
+  </div>
+  <div class="item"><b>Créateur de l'application</b><div style="margin-top:6px;font-size:18px">TPH Faustin MB</div></div>
+  <div class="item"><b>Contact</b>
+   <div class="meta" style="margin-top:6px">E-mail</div><div>ambufau@gmail.com</div>
+   <div class="meta" style="margin-top:8px">Téléphone</div><div>+243 970 258 556</div>
+   <div class="acts" style="margin-top:12px;display:flex;flex-wrap:wrap;gap:8px">
+    <a class="btn sm" style="text-decoration:none;display:inline-flex;align-items:center" href="mailto:ambufau@gmail.com">Écrire un e-mail</a>
+    <a class="btn ghost sm" style="text-decoration:none;display:inline-flex;align-items:center" href="tel:+243970258556">Appeler</a>
+    <a class="btn ghost sm" style="text-decoration:none;display:inline-flex;align-items:center" target="_blank" rel="noopener" href="https://wa.me/243970258556">WhatsApp</a>
+   </div></div>
+  <div class="meta" style="text-align:center;margin:14px 0">© 2026 Powerful Pharmagest. Tous droits réservés.</div>
+</section>
+</div>
+<div class="wrap hide" id="lg"><div style="text-align:center;padding-top:36px"><img src="icon-192.png" alt="" width="84" height="84" style="border-radius:20px"></div><h1 style="text-align:center;margin-top:10px">Powerful Pharmagest</h1><div class="item" id="lgc"></div></div>
+
+<dialog id="dlg">
+  <form id="f" method="dialog">
+    <h2 id="dt" style="margin:0 0 4px;font-size:18px">Médicament</h2>
+    <label for="fn">Nom</label><input id="fn" required maxlength="80" autocomplete="off"><div id="sim"></div>
+    <div class="g2">
+      <div><label for="fc">Prix d'achat ($)</label><input id="fc" type="number" min="0" step="any" required><div class="meta" id="hnc"></div></div>
+      <div><label for="fp">Prix de vente ($)</label><input id="fp" type="number" min="0" step="any" required><div class="meta" id="hnp"></div></div>
+      <div><label for="fq">Quantité</label><input id="fq" type="number" min="0" step="1" required></div>
+      <div><label for="fm">Seuil d'alerte</label><input id="fm" type="number" min="0" step="1" value="5" required></div>
+      <div><label for="fe">Péremption</label><input id="fe" type="date"></div>
+    </div>
+    <div class="row stk" style="justify-content:flex-end">
+      <button type="button" class="btn ghost" id="cancel">Annuler</button>
+      <button class="btn" type="submit">Enregistrer</button>
+    </div>
+  </form>
+</dialog>
+<dialog id="sdlg"><form id="sf" method="dialog"><h2 style="margin:0 0 4px;font-size:18px">Réglages</h2>
+<label for="sn">Nom de la pharmacie</label><input id="sn" maxlength="60">
+<label for="sa">Adresse et téléphone</label><input id="sa" maxlength="120">
+<label for="su">Lien de l'application (hébergée en ligne)</label><input id="su" type="url" placeholder="https://mapharmacie.netlify.app">
+<label for="sd">Base de données en ligne (partage entre appareils)</label><input id="sd" type="url" placeholder="https://xxx-default-rtdb.firebaseio.com">
+<label for="sk">Clé API Web Firebase (connexion sécurisée, recommandé)</label><input id="sk" placeholder="AIza…" autocomplete="off" spellcheck="false"><div class="meta" id="lic"></div>
+<details style="margin-top:6px"><summary class="meta">Comment l'obtenir ?</summary><div class="meta">1) console.firebase.google.com : créez un projet, puis Realtime Database &gt; Créer. 2) Onglet Règles : collez les règles ci-dessous, puis Publier. 3) Collez ici l'adresse de la base. <b>Mode sécurisé :</b> dans Firebase, Authentication &gt; Méthode de connexion &gt; activez E-mail/Mot de passe ; Paramètres du projet &gt; Clé API Web : collez-la dans le champ ci-dessus, enregistrez, puis publiez les règles sécurisées.<br><button type="button" class="btn ghost sm" id="rules" style="margin-top:6px">Copier les règles</button> <button type="button" class="btn ghost sm" id="rules2" style="margin-top:6px">Copier les règles sécurisées</button></div></details>
+<label>Sauvegarde</label><div class="row"><button type="button" class="btn ghost sm" id="bk">Sauvegarder</button><button type="button" class="btn ghost sm" id="rs">Restaurer</button></div><div class="meta" id="bkd" style="margin-top:6px"></div><input type="file" id="rf" accept=".json,application/json" class="hide">
+<div class="g2"><div><label for="sr">Taux : 1 $ = … FC</label><input id="sr" type="number" min="1" step="any" required></div>
+<div><label for="sc">Affichage des prix</label><select id="sc" style="width:100%"><option value="USD">Dollars ($)</option><option value="CDF">Francs (FC)</option></select></div></div>
+<label for="sl">Conserver l'historique de connexion</label><select id="sl" style="width:100%"><option value="14">2 semaines</option><option value="30">1 mois</option></select><div class="meta">Les connexions plus anciennes sont supprimées automatiquement.</div>
+<div class="row stk" style="justify-content:flex-end"><button type="button" class="btn ghost" id="scancel">Annuler</button><button class="btn" type="submit">Enregistrer</button></div></form></dialog>
+<dialog id="pdlg"><form id="pf" method="dialog"><h2 style="margin:0 0 4px;font-size:18px">Changer mon PIN</h2>
+<label for="po">PIN actuel</label><input id="po" type="password" inputmode="numeric" maxlength="8" autocomplete="current-password">
+<label for="pn">Nouveau PIN (4 à 8 chiffres)</label><input id="pn" type="password" inputmode="numeric" maxlength="8" autocomplete="new-password">
+<label for="pn2">Confirmer le nouveau PIN</label><input id="pn2" type="password" inputmode="numeric" maxlength="8" autocomplete="new-password">
+<div class="row stk" style="justify-content:flex-end"><button type="button" class="btn ghost" id="pcancel">Annuler</button><button class="btn" type="submit" id="psave">Enregistrer</button></div></form></dialog>
+<dialog id="inv"><div id="invc"></div><div class="row noprint stk" style="justify-content:flex-end"><button class="btn ghost" id="iclose">Fermer</button><a class="btn" id="iwa" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center">WhatsApp</a><button class="btn" id="iprint">Imprimer / PDF</button></div></dialog>
+<div id="toast" role="status"></div>
+
+<script>
+/* CONFIGURATION DU FOURNISSEUR : adresse de votre base Firebase et cle API Web. Si url est vide, chaque pharmacie utilise sa propre base (Reglages). */
+var DEF={url:'',api:''};
+var S={meds:[],sales:[],buys:[],logins:[],users:[],me:null,cur:'USD',rate:2800,no:0,shop:{name:'',addr:''},appUrl:'',db:null,q:[],lastBk:'',lp:{},act:{},inv:[],invl:{}},client='',cphone='',cart=[],filter='all',editId=null;
+var $=function(s){return document.querySelector(s)};
+try{var raw=localStorage.getItem('pharma-v1');if(raw){var p=JSON.parse(raw);S.meds=p.meds||[];S.sales=p.sales||[];S.buys=p.buys||[];S.logins=p.logins||[];S.cur=p.cur==='CDF'?'CDF':'USD';S.rate=p.rate||2800;S.no=p.no||0;S.shop=p.shop||S.shop;S.users=p.users||[];S.appUrl=p.appUrl||'';S.db=p.db||null;S.q=p.q||[];S.lastBk=p.lastBk||'';S.lp=p.lp||{};S.act=p.act||{};S.inv=p.inv||[];S.invl=p.invl||{}}}catch(e){}
+function save(){try{localStorage.setItem('pharma-v1',JSON.stringify(S,function(k,v){return k==='me'?undefined:v}))}catch(e){}}
+function esc(t){return String(t).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function usd(n){return new Intl.NumberFormat('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)+' $'}
+function cdf(n,r){return new Intl.NumberFormat('fr-FR',{maximumFractionDigits:0}).format(Math.round(n*(r||S.rate)))+' FC'}
+function fmt(n){return S.cur==='CDF'?cdf(n):usd(n)}
+function hpl(p){var x=5381,i;p='ph|'+p;for(i=0;i<p.length;i++)x=((x<<5)+x+p.charCodeAt(i))|0;return String(x)}
+function hex(b){return Array.from(new Uint8Array(b),function(x){return ('0'+x.toString(16)).slice(-2)}).join('')}
+/* Hachage des PIN : PBKDF2-SHA256, 150000 tours, sel aleatoire par utilisateur (format v2$sel$hash) */
+function hp(p,salt){var sub=window.crypto&&crypto.subtle;if(!sub)return Promise.resolve(hpl(p));
+ if(!salt){var a=new Uint8Array(16);crypto.getRandomValues(a);salt=hex(a)}
+ var enc=new TextEncoder();
+ return sub.importKey('raw',enc.encode(p),'PBKDF2',false,['deriveBits']).then(function(k){return sub.deriveBits({name:'PBKDF2',salt:enc.encode(salt),iterations:150000,hash:'SHA-256'},k,256)}).then(function(b){return 'v2$'+salt+'$'+hex(b)})}
+/* Verification : accepte les anciens PIN et les migre vers le nouveau format a la premiere connexion reussie */
+function chk(u,p){if(u.pin&&u.pin.indexOf('v2$')===0){return hp(p,u.pin.split('$')[1]).then(function(h){return h===u.pin})}
+ if(u.pin&&u.pin===hpl(p)){return hp(p).then(function(h){if(h.indexOf('v2$')===0){u.pin=h;sy('PUT','users/'+u.id,u);save()}return true})}
+ return Promise.resolve(false)}
+/* Blocage apres 5 PIN incorrects : 30 s, puis doublement a chaque echec (maximum 15 min) */
+function lkGet(){try{return JSON.parse(localStorage.getItem('pharma-lock')||'{}')}catch(e){return {}}}
+function lkPut(o){try{localStorage.setItem('pharma-lock',JSON.stringify(o))}catch(e){}}
+function lkLeft(id){var o=lkGet()[id];return o&&o.until>Date.now()?Math.ceil((o.until-Date.now())/1000):0}
+function lkFail(id){var a=lkGet(),o=a[id]||{n:0,until:0};o.n++;if(o.n>=5)o.until=Date.now()+Math.min(900,30*Math.pow(2,o.n-5))*1000;a[id]=o;lkPut(a)}
+function lkOk(id){var a=lkGet();delete a[id];lkPut(a)}
+/* ===== Mode securise (Firebase Authentication, API REST) =====
+   Chaque utilisateur a un compte Firebase : e-mail technique + mot de passe derive du PIN (PBKDF2).
+   Le PIN n'est jamais envoye ni stocke en base. Les regles Firebase verifient l'appartenance a la pharmacie et le role. */
+var AUTH=null,CRED=null,denied=0;
+function sec(){return !!(S.db&&S.db.api)}
+function em(u){return u.id+(u.g?'-g'+u.g:'')+'@'+S.db.key+'.pharma.app'}
+function isAct(u){return sec()?!!(S.act&&S.act[u.id]):!!u.pin}
+function pwd(pin,email){var sub=window.crypto&&crypto.subtle;if(!sub)return Promise.reject('nocrypto');var enc=new TextEncoder();
+ return sub.importKey('raw',enc.encode(pin),'PBKDF2',false,['deriveBits']).then(function(k){return sub.deriveBits({name:'PBKDF2',salt:enc.encode('pharmagest|'+email),iterations:150000,hash:'SHA-256'},k,256)}).then(hex)}
+function aerr(r){return r.json().then(function(j){throw (j&&j.error&&j.error.message)||'ERR'},function(){throw 'ERR'})}
+function authCall(kind,email,pw){return fetch('https://identitytoolkit.googleapis.com/v1/accounts:'+kind+'?key='+encodeURIComponent(S.db.api),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,password:pw,returnSecureToken:true})}).then(function(r){return r.ok?r.json():aerr(r)}).then(function(j){AUTH={uid:j.localId,id:j.idToken,rt:j.refreshToken,exp:Date.now()+(+j.expiresIn||3600)*1000};return AUTH})}
+function refreshTok(){return fetch('https://securetoken.googleapis.com/v1/token?key='+encodeURIComponent(S.db.api),{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'grant_type=refresh_token&refresh_token='+encodeURIComponent(AUTH.rt)}).then(function(r){return r.ok?r.json():aerr(r)}).then(function(j){AUTH.id=j.id_token;AUTH.rt=j.refresh_token||AUTH.rt;AUTH.exp=Date.now()+(+j.expires_in||3600)*1000;return AUTH})}
+function tok(){if(AUTH&&AUTH.exp-6e4>Date.now())return Promise.resolve(AUTH.id);
+ var re=function(){return CRED?authCall('signInWithPassword',CRED.email,CRED.pw):Promise.reject('noauth')};
+ return (AUTH&&AUTH.rt?refreshTok().catch(function(e){if(typeof e==='string')return re();throw e}):re()).then(function(a){return a.id})}
+function incOp(path,leaf,d){if(sec())return ['PUT',path+'/'+leaf,{'.sv':{increment:d}}];var o={};o[leaf]={'.sv':{increment:d}};return ['PATCH',path,o]}
+function putAll(o){return Promise.all(Object.keys(o).map(function(k){return J('PUT',k,o[k])}))}
+function deniedOp(){if(!denied){denied=1;toast('Une modification a été refusée par la base');setTimeout(function(){denied=0},4000)}}
+function revoked(){if(!S.me)return;toast('Accès retiré ou session expirée. Reconnectez-vous.');lock()}
+function checkAccess(){if(!AUTH)return;J('GET','members/'+AUTH.uid).then(function(m){if(!m)revoked();else licCheck()},function(){})}
+function aMsg(e){if(e==='nocrypto')return 'Navigateur non compatible : utilisez une adresse HTTPS';
+ if(typeof e==='string'){if(/TOO_MANY/.test(e))return 'Trop d\'essais, réessayez dans quelques minutes';
+  if(/API key|OPERATION_NOT_ALLOWED|CONFIGURATION_NOT_FOUND/.test(e))return 'Clé API invalide ou connexion par e-mail non activée dans Firebase';
+  if(/EXISTS|INVALID_LOGIN|INVALID_PASSWORD|EMAIL_NOT_FOUND/.test(e))return 'PIN incorrect ou compte déjà activé avec un autre PIN';
+  return 'Erreur : '+e}
+ if(e===401||e===403)return 'Accès refusé par la base : invitation expirée ou règles non publiées';
+ return 'Connexion impossible : vérifiez internet et réessayez'}
+function lchk(u,pin){var h=S.lp&&S.lp[u.id];if(!h)return Promise.resolve(false);return hp(pin,h.split('$')[1]).then(function(x){return x===h})}
+/* Connexion : Firebase verifie le PIN (en ligne) ; sans internet, controle local sur cet appareil */
+function secLogin(u,pin){var email=em(u);
+ return pwd(pin,email).then(function(pw){
+  return authCall('signInWithPassword',email,pw).then(function(){CRED={email:email,pw:pw};return hp(pin).then(function(h){S.lp[u.id]=h;save();return true})},function(e){
+   if(typeof e==='string'){if(/TOO_MANY/.test(e))return 'many';if(/API key|OPERATION_NOT_ALLOWED|CONFIGURATION_NOT_FOUND/.test(e))return 'config';return false}
+   return lchk(u,pin).then(function(ok){if(ok){CRED={email:email,pw:pw};return true}return S.lp[u.id]?false:'offline'})})
+ },function(){return 'nocrypto'})}
+/* Activation d'un compte invite : creation du compte Firebase puis rattachement a la pharmacie grace au jeton d'invitation */
+function activate(u,pin,t){var email=em(u);
+ return pwd(pin,email).then(function(pw){
+  return authCall('signUp',email,pw).catch(function(e){if(e==='EMAIL_EXISTS')return authCall('signInWithPassword',email,pw);throw e})
+  .then(function(){CRED={email:email,pw:pw};return J('GET','members/'+AUTH.uid)})
+  .then(function(m){if(m)return;return J('PUT','members/'+AUTH.uid,{u:u.id,r:u.role,t:t||''}).then(function(){if(t)return J('DELETE','invites/'+t).catch(function(){})})})
+  .then(function(){return hp(pin)}).then(function(h){S.lp[u.id]=h;save()})})}
+/* Retrait d'acces : supprime l'appartenance a la pharmacie (effet immediat, meme si l'appareil est perdu) */
+function revoke(id){return J('GET','members').then(function(m){var a=[];Object.keys(m||{}).forEach(function(k){if(m[k]&&m[k].u===id)a.push(J('DELETE','members/'+k))});return Promise.all(a)})}
+function resetAccess(id){var u=S.users.find(function(x){return x.id===id});if(!u)return;
+ if(u.id===S.me.id){toast('Pour changer votre PIN, utilisez « Mon PIN » en haut. PIN oublié : demandez à un autre administrateur.');return}
+ if(!confirm('Réinitialiser l\'accès de « '+u.name+' » ? Son ancien PIN ne fonctionnera plus et un nouveau lien sera copié.'))return;
+ revoke(id).then(function(){u.g=(u.g||0)+1;sy('PUT','users/'+u.id,u);save();copyTxt(invLink(u));render();toast('Lien copié : envoyez-le à '+u.name)},function(){toast('Connexion requise pour réinitialiser')})}
+/* Changement de PIN par l'utilisateur : verifie l'ancien PIN, puis met a jour le mot de passe du compte (mode securise) ou le hachage (mode classique) */
+function changePin(oldP,newP){var u=S.me;if(!u)return Promise.resolve('none');
+ if(lkLeft(u.id))return Promise.resolve('many');
+ var bad=function(){lkFail(u.id);return 'wrong'};
+ if(!sec())return chk(u,oldP).then(function(ok){if(!ok)return bad();return hp(newP).then(function(h){u.pin=h;var su=S.users.find(function(x){return x.id===u.id});if(su)su.pin=h;sy('PUT','users/'+u.id,u);save();lkOk(u.id);return true})});
+ var email=em(u);
+ return Promise.all([pwd(oldP,email),pwd(newP,email)]).then(function(a){
+  return authCall('signInWithPassword',email,a[0]).then(function(){
+   return fetch('https://identitytoolkit.googleapis.com/v1/accounts:update?key='+encodeURIComponent(S.db.api),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:AUTH.id,password:a[1],returnSecureToken:true})}).then(function(r){return r.ok?r.json():aerr(r)})})
+  .then(function(j){AUTH={uid:j.localId,id:j.idToken,rt:j.refreshToken,exp:Date.now()+(+j.expiresIn||3600)*1000};CRED={email:email,pw:a[1]};return hp(newP)})
+  .then(function(h){S.lp[u.id]=h;save();lkOk(u.id);return true},function(e){
+   if(typeof e==='string'){if(/TOO_MANY/.test(e))return 'many';if(/INVALID_LOGIN|INVALID_PASSWORD/.test(e))return bad();return e}
+   return 'offline'})
+ },function(){return 'nocrypto'})}
+/* Passage d'une base existante (ou neuve) en mode securise. pin/done : utilises par la creation d'une pharmacie */
+function secureConnect(pin,done){var fail=function(msg,e){if(S.db)S.db.api='';save();toast(msg);if(done)done(false,msg,e)};
+ if(!adm()){fail('Réservé à un administrateur');return}
+ if(!(window.crypto&&crypto.subtle)){fail(aMsg('nocrypto'));return}
+ var p=pin;if(!p){p=prompt('Pour sécuriser la base, entrez votre code PIN');if(!p){fail('Sécurisation annulée');return}}
+ var u=S.me;
+ chk(u,p).then(function(ok){if(!ok){fail('PIN incorrect');return}
+  var email=em(u);toast('Connexion en cours…');
+  return pwd(p,email).then(function(pw){
+   return authCall('signUp',email,pw).catch(function(e){if(e==='EMAIL_EXISTS')return authCall('signInWithPassword',email,pw);throw e})
+   .then(function(){CRED={email:email,pw:pw};return J('GET','members/'+AUTH.uid)})
+   .then(function(m){return m?m:J('PUT','members/'+AUTH.uid,{u:u.id,r:'admin'})})
+   .then(function(){return hp(p)}).then(function(h){S.lp[u.id]=h;save();return connect()})
+   .then(function(){if(done)done(!!S.db)})})
+ }).catch(function(e){fail(aMsg(e),e)})}
+/* Premier demarrage chez un client : code pharmacie remis par le fournisseur */
+function renderFirst(){var c=$('#lgc');
+ c.innerHTML='<b>Créer ma pharmacie</b><div class="meta">Entrez le code pharmacie remis par votre fournisseur. Vous serez l\'administrateur.</div><label for="lc">Code pharmacie</label><input id="lc" maxlength="40" autocapitalize="none" autocomplete="off" spellcheck="false"><label for="lsn">Nom de la pharmacie</label><input id="lsn" maxlength="60"><label for="ln">Votre nom</label><input id="ln" maxlength="40"><label for="lp">Code PIN (4 à 8 chiffres)</label><input id="lp" type="password" inputmode="numeric" maxlength="8"><div style="margin-top:14px"><button class="btn" id="lgo" style="width:100%">Créer et entrer</button></div><div class="meta" style="margin-top:10px">Vous avez reçu une invitation ? Ouvrez simplement le lien reçu.</div>';
+ $('#lgo').onclick=function(){var code=$('#lc').value.trim().toLowerCase(),sn=$('#lsn').value.trim(),n=$('#ln').value.trim(),p=$('#lp').value;
+  if(!/^[a-z0-9-]{4,40}$/.test(code)){toast('Code pharmacie invalide (lettres, chiffres, tirets)');return}
+  if(!sn||!n||!/^\d{4,8}$/.test(p)){toast('Nom de la pharmacie, votre nom et PIN (4 à 8 chiffres) requis');return}
+  var b=$('#lgo');b.disabled=true;
+  hp(p).then(function(h){var u={id:uid(),name:n,role:'admin',pin:h,g:0};
+   S.users=[u];S.me=u;S.shop={name:sn,addr:''};S.db={url:DEF.url,key:code,api:DEF.api};S.q=[];S.lp={};S.act={};
+   secureConnect(p,function(ok,msg,e){
+    if(ok&&S.db){enter(u);setTimeout(licCheck,1500);return}
+    S.users=[];S.me=null;S.db=null;S.q=[];S.lp={};save();b.disabled=false;
+    if(e===401||e===403)toast('Code inconnu, abonnement expiré ou pharmacie déjà créée (dans ce cas, demandez un lien d\'invitation)')})})}
+ $('#lp').onkeydown=function(e){if(e.key==='Enter')$('#lgo').click()}}
+/* Abonnement : date d'expiration lisible par les membres de la pharmacie */
+function JL(path){return tok().then(function(t){return fetch(S.db.url.replace(/\/+$/,'')+'/'+path+'.json?auth='+encodeURIComponent(t)).then(function(r){if(!r.ok)throw r.status;return r.json()})})}
+function licCheck(){if(!sec()||!S.me)return;JL('licenses/'+S.db.key+'/x').then(function(x){if(!x)return;S.licx=x;save();var d=Math.ceil((x-Date.now())/864e5);
+ if(d<0)toast('Abonnement expiré : vos ventes restent enregistrées sur cet appareil jusqu\'au renouvellement');else if(d<=7)toast('Abonnement : il reste '+d+' jour'+(d>1?'s':''))},function(){})}
+/* Regles de securite a publier dans Firebase (Realtime Database > Regles).
+   lic=true : base heberge par le fournisseur (abonnement controle, lecture tolerée 30 jours apres expiration) ; vendor = UID du compte fournisseur */
+function secRules(lic,vendor){
+ var MB="auth != null && root.child('p/'+$k+'/members/'+auth.uid).exists()",
+ AB="auth != null && root.child('p/'+$k+'/members/'+auth.uid+'/r').val() === 'admin'",
+ LW=lic?"root.child('licenses/'+$k+'/x').val() > now":"true",
+ LR=lic?"root.child('licenses/'+$k+'/x').val() + 2592000000 > now":"true",
+ M=MB+" && "+LW,MR=MB+" && "+LR,A=AB+" && "+LW,AR=AB+" && "+LR,
+ I="root.child('p/'+$k+'/invites/'+newData.child('t').val()+'/",
+ C="newData.child('t').exists() && "+I+"u').val() === newData.child('u').val() && "+I+"r').val() === newData.child('r').val() && "+I+"x').val() > now",
+ B="!root.child('p/'+$k+'/members').exists() && newData.child('r').val() === 'admin'",
+ R="newData.child('r').val() === 'admin' || newData.child('r').val() === 'cashier'",
+ V="auth != null && auth.uid === '"+(vendor||'REMPLACER_PAR_UID_FOURNISSEUR')+"'",
+ o={'.read':false,'.write':false,p:{$k:{
+  members:{'.read':AR,$uid:{'.read':"auth != null && auth.uid === $uid",'.write':"("+A+") || (auth != null && auth.uid === $uid && !data.exists() && ("+LW+") && ("+B+" || ("+C+")))",'.validate':"newData.hasChildren(['u','r']) && ("+R+")"}},
+  invites:{$t:{'.write':"("+A+") || (auth != null && !newData.exists() && root.child('p/'+$k+'/members/'+auth.uid+'/t').val() === $t)",'.validate':"newData.hasChildren(['u','r','x'])"}},
+  users:{'.read':MR,'.write':A},
+  meds:{'.read':MR,'.write':A,$id:{qty:{'.write':M,'.validate':'newData.isNumber()'}}},
+  sales:{'.read':MR,'.write':A,$id:{'.write':M+" && !data.exists()"}},
+  buys:{'.read':AR,'.write':A},
+  logins:{'.read':AR,'.write':A,$id:{'.write':M+" && !data.exists()"}},
+  inventories:{'.read':AR,'.write':A},
+  invl:{'.read':AR,'.write':A},
+  meta:{'.read':MR,'.write':A,no:{'.write':M,'.validate':'newData.isNumber()'},v:{'.write':M,'.validate':'newData.isNumber()'}}
+ }}};
+ if(lic)o.licenses={'.read':V,'.write':V,$k:{x:{'.read':MB,'.validate':'newData.isNumber()'}}};
+ return JSON.stringify({rules:o},null,1)}
+/* ===== fin mode securise ===== */
+function adm(){return S.me&&S.me.role==='admin'}
+function mine(){return adm()?S.sales:S.sales.filter(function(v){return v.uid===S.me.id})}
+function pad(n){return 'FAC-'+String(n).padStart(4,'0')}
+function today(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function days(d){return Math.round((new Date(d)-new Date(today()))/864e5)}
+function state(m){var s=[];if(m.exp){var d=days(m.exp);if(d<0)s.push('exp');else if(d<=90)s.push('soon')}
+ if(m.qty<=0)s.push('out');else if(m.qty<=m.min)s.push('low');return s}
+function toast(t){var e=$('#toast');e.textContent=t;e.classList.add('on');setTimeout(function(){e.classList.remove('on')},2200)}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+function dateFr(d){return new Date(d).toLocaleDateString('fr-FR')}
+
+/* Onglets */
+function go(t){document.querySelectorAll('.tabs button').forEach(function(x){x.setAttribute('aria-selected',x.dataset.t===t)});['stock','vente','histo','achats','inventaire','bilan','equipe','apropos'].forEach(function(id){$('#'+id).classList.toggle('hide',id!==t)});render()}
+document.querySelectorAll('.tabs button').forEach(function(b){b.onclick=function(){go(b.dataset.t)}});
+$('#set').onclick=function(){showBk();$('#sn').value=S.shop.name;$('#sa').value=S.shop.addr;$('#su').value=S.appUrl||'';$('#sd').value=S.db?S.db.url:'';$('#sk').value=S.db&&S.db.api||'';if(DEF.url)document.querySelectorAll('label[for="sd"],label[for="sk"],#sd,#sk,#sdlg details').forEach(function(e){e.classList.add('hide')});$('#lic').textContent=sec()&&S.licx?(S.licx<Date.now()?'Abonnement expiré le ':'Abonnement actif jusqu\'au ')+new Date(S.licx).toLocaleDateString('fr-FR'):'';$('#sr').value=S.rate;$('#sc').value=S.cur;$('#sl').value=String(S.logDays||30);$('#sdlg').showModal()};
+$('#scancel').onclick=function(){$('#sdlg').close()};
+$('#sf').onsubmit=function(e){e.preventDefault();var su=$('#su').value.trim().split('#')[0];if(su&&!/^https?:\/\/\S+$/.test(su)){toast('Le lien doit commencer par https://');return}S.appUrl=su;S.shop={name:$('#sn').value.trim(),addr:$('#sa').value.trim()};S.rate=parseFloat($('#sr').value)||2800;S.cur=$('#sc').value;S.logDays=parseInt($('#sl').value,10)||30;var sd=$('#sd').value.trim().replace(/\/+$/,'');if(sd&&!/^https:\/\/\S+$/.test(sd)){toast("L'adresse doit commencer par https://");return}
+ var sk=$('#sk').value.trim();if(sk&&!/^AIza[0-9A-Za-z_-]{30,}$/.test(sk)){toast('Clé API invalide (elle commence par AIza)');return}
+ sy('PUT','meta/shop',S.shop);sy('PUT','meta/rate',S.rate);sy('PUT','meta/logDays',S.logDays);pruneLogs(true);
+ if(sd!==(S.db?S.db.url:'')){if(!sd){S.db=null;S.q=[]}else{S.db={url:sd,key:S.db&&S.db.key||rk()};if(sk){S.db.api=sk;secureConnect()}else connect()}}
+ else if(S.db&&sk&&sk!==(S.db.api||'')){S.db.api=sk;secureConnect()}
+ save();setSt(true);$('#sdlg').close();render();toast('Réglages enregistrés')};
+var curInv=null;
+/* ===== Proforma : devis envoye depuis le panier, sans vente, sans numero de facture, sans toucher au stock ===== */
+var PRO_DAYS=7;
+function docTitle(v){return v.pro?'Facture proforma '+v.ref:'Facture '+(v.no?pad(v.no):'')}
+function proNote(v){return '<p class="meta" style="text-align:center;margin-top:16px"><b>Facture proforma (devis)</b> : aucune vente n\'est enregistrée et les produits ne sont pas réservés. Prix valables jusqu\'au '+new Date(v.until).toLocaleDateString('fr-FR')+', dans la limite des stocks.</p>'}
+function makeProforma(){if(!cart.length){toast('Le panier est vide');return false}
+ var items=[],total=0;
+ for(var i=0;i<cart.length;i++){var m=S.meds.find(function(x){return x.id===cart[i].id});
+  if(!m){toast('Produit introuvable');return false}
+  if(m.exp&&days(m.exp)<0){toast('Produit périmé : '+m.name);return false}
+  items.push({name:m.name,q:cart[i].q,price:m.price});total+=m.price*cart[i].q}
+ var d=new Date();
+ showInv({pro:true,ref:'PRO-'+d.toISOString().slice(2,10).replace(/-/g,'')+'-'+uid().slice(-4).toUpperCase(),user:S.me.name,date:d.toISOString(),until:new Date(d.getTime()+PRO_DAYS*864e5).toISOString(),client:client.trim(),phone:cphone.trim(),rate:S.rate,items:items,total:total});
+ return true}
+/* ===== fin proforma ===== */
+function showInv(v){curInv=v;var r=v.rate||S.rate,sh=S.shop;
+ var rows=v.items.map(function(i){return '<tr><td>'+esc(i.name)+'</td><td class="r">'+i.q+'</td><td class="r">'+usd(i.price)+'</td><td class="r">'+usd(i.price*i.q)+'</td></tr>'}).join('');
+ $('#invc').innerHTML='<h2 style="margin:0">'+esc(sh.name||'Pharmacie')+'</h2><div class="meta">'+esc(sh.addr)+'</div><hr><div class="top"><b>'+docTitle(v)+'</b><span>'+new Date(v.date).toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'})+'</span></div><div class="meta">Client : '+esc(v.client||'—')+(v.user?' · Servi par '+esc(v.user):'')+'</div><table><tr><th>Désignation</th><th class="r">Qté</th><th class="r">P.U.</th><th class="r">Total</th></tr>'+rows+'</table><div class="total" style="margin:10px 0 2px"><span>Total</span><span>'+usd(v.total)+'</span></div><div class="total" style="margin:0;font-size:17px"><span>Soit</span><span>'+cdf(v.total,r)+'</span></div><div class="meta">Taux appliqué : 1 $ = '+new Intl.NumberFormat('fr-FR').format(r)+' FC</div>'+(v.pro?proNote(v):'<p class="meta" style="text-align:center;margin-top:16px">Merci de votre confiance.</p>');
+ $('#iwa').href='https://wa.me/'+waNum(v.phone)+'?text='+encodeURIComponent(waText(v));
+ $('#inv').showModal()}
+function waNum(t){var d=String(t||'').replace(/\D/g,'');if(d.indexOf('00')===0)d=d.slice(2);else if(d.charAt(0)==='0')d='243'+d.slice(1);else if(d.length===9)d='243'+d;return d}
+function waText(v){var r=v.rate||S.rate,sh=S.shop;return (sh.name||'Pharmacie')+(sh.addr?'\n'+sh.addr:'')+'\n'+docTitle(v)+' - '+new Date(v.date).toLocaleDateString('fr-FR')+'\n'+(v.client?'Client : '+v.client+'\n':'')+'\n'+v.items.map(function(i){return i.name+' x '+i.q+' = '+usd(i.price*i.q)}).join('\n')+'\n\nTotal : '+usd(v.total)+' ('+cdf(v.total,r)+')\nTaux : 1 $ = '+r+' FC'+(v.pro?'\n\nFacture proforma (devis) : aucune vente n\'est enregistrée et les produits ne sont pas réservés. Prix valables jusqu\'au '+new Date(v.until).toLocaleDateString('fr-FR')+', dans la limite des stocks.':'\nMerci de votre confiance.')}
+$('#iclose').onclick=function(){$('#inv').close()};
+$('#iprint').onclick=function(){if(curInv)savePdf(curInv)};
+function clean(t){return String(t).replace(/[\u202f\u00a0]/g,' ').replace(/[\u2013\u2014]/g,'-').replace(/[^\x20-\xff]/g,'?')}
+function pdfBytes(pages){var o=[],f=[],out='%PDF-1.4\n',kids=[],i;
+ o[1]='<< /Type /Catalog /Pages 2 0 R >>';
+ o[3]='<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>';
+ o[4]='<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>';
+ pages.forEach(function(c,k){var po=5+k*2,co=po+1;kids.push(po+' 0 R');
+  o[po]='<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents '+co+' 0 R >>';
+  o[co]='<< /Length '+c.length+' >>\nstream\n'+c+'\nendstream'});
+ o[2]='<< /Type /Pages /Kids ['+kids.join(' ')+'] /Count '+pages.length+' >>';
+ for(i=1;i<o.length;i++){f[i]=out.length;out+=i+' 0 obj\n'+o[i]+'\nendobj\n'}
+ var x=out.length;out+='xref\n0 '+o.length+'\n0000000000 65535 f \n';
+ for(i=1;i<o.length;i++)out+=String(f[i]).padStart(10,'0')+' 00000 n \n';
+ out+='trailer\n<< /Size '+o.length+' /Root 1 0 R >>\nstartxref\n'+x+'\n%%EOF';
+ var u=new Uint8Array(out.length);for(i=0;i<out.length;i++)u[i]=out.charCodeAt(i)&255;return u}
+function invPdf(v){
+ var r=v.rate||S.rate,sh=S.shop,pg=[],c='',y=800,L=50,E=545;
+ function W(t,z){var w=0;t.split('').forEach(function(h){w+=/[0-9]/.test(h)?.556:(h===' '||h===','||h==='.')?.278:h==='$'?.556:h==='F'?.611:h==='C'?.722:h==='-'?.333:.55});return w*z}
+ function T(t,x,yy,z,b,right){t=clean(t);var xx=right?x-W(t,z):x;c+='BT /'+(b?'F2':'F1')+' '+z+' Tf '+xx.toFixed(1)+' '+yy+' Td ('+t.replace(/[\\()]/g,'\\$&')+') Tj ET\n'}
+ function Ln(yy){c+=L+' '+yy+' m '+E+' '+yy+' l S\n'}
+ T(sh.name||'Pharmacie',L,y,18,1);y-=16;if(sh.addr){T(sh.addr,L,y,10);y-=12}
+ y-=8;Ln(y);y-=22;
+ T(docTitle(v),L,y,14,1);T(new Date(v.date).toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'}),E,y,10,0,1);y-=18;
+ T('Client : '+(v.client||'-')+(v.user?'   Servi par : '+v.user:''),L,y,10);y-=22;
+ function head(){T('Désignation',L,y,10,1);T('Qté',330,y,10,1,1);T('P.U.',435,y,10,1,1);T('Total',E,y,10,1,1);y-=6;Ln(y);y-=16}
+ head();
+ v.items.forEach(function(i){if(y<110){pg.push(c);c='';y=800;head()}
+  var n=i.name.length>46?i.name.slice(0,45)+'...':i.name;
+  T(n,L,y,10);T(String(i.q),330,y,10,0,1);T(usd(i.price),435,y,10,0,1);T(usd(i.price*i.q),E,y,10,0,1);y-=17});
+ y+=5;Ln(y);y-=22;
+ T('Total',L,y,13,1);T(usd(v.total),E,y,13,1,1);y-=18;
+ T('Soit',L,y,11);T(cdf(v.total,r),E,y,11,0,1);y-=16;
+ T('Taux appliqué : 1 $ = '+new Intl.NumberFormat('fr-FR').format(r)+' FC',L,y,9);y-=30;
+ if(v.pro){T('Facture proforma (devis) : aucune vente enregistrée, produits non réservés.',L,y,9);y-=13;T('Prix valables jusqu\'au '+new Date(v.until).toLocaleDateString('fr-FR')+', dans la limite des stocks.',L,y,9)}else T('Merci de votre confiance.',L,y,10);
+ pg.push(c);return pdfBytes(pg)}
+function savePdf(v){var name=(v.pro?v.ref:(v.no?pad(v.no):'facture'))+'.pdf',bytes=invPdf(v);
+ function ok(){toast('PDF prêt : '+name)}
+ function fb(){try{var u=URL.createObjectURL(new Blob([bytes],{type:'application/pdf'})),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},4000);ok()}catch(e){toast('Téléchargement impossible ici')}}
+ try{if(window.claude&&window.claude.use){window.claude.use('downloads').then(function(d){if(!d){fb();return}d.save({filename:name,data:bytes}).then(ok,function(e){if(!e||e.code!=='declined')toast('Téléchargement impossible')})},fb);return}}catch(e){}
+ fb()}
+
+/* Stock */
+function renderStock(){
+ var q=$('#q1').value.trim().toLowerCase();
+ var low=S.meds.filter(function(m){var s=state(m);return s.indexOf('low')>-1||s.indexOf('out')>-1}).length;
+ var per=S.meds.filter(function(m){var s=state(m);return s.indexOf('exp')>-1||s.indexOf('soon')>-1}).length;
+ var defs=[['all','Tous ('+S.meds.length+')'],['low','Stock bas ('+low+')'],['per','Péremption ('+per+')']];
+ $('#chips').innerHTML=defs.map(function(c){return '<button class="chip" data-f="'+c[0]+'" aria-pressed="'+(filter===c[0])+'">'+c[1]+'</button>'}).join('');
+ document.querySelectorAll('#chips .chip').forEach(function(c){c.onclick=function(){filter=c.dataset.f;renderStock()}});
+ var L=S.meds.filter(function(m){
+  if(q&&m.name.toLowerCase().indexOf(q)<0)return false;
+  var s=state(m);
+  if(filter==='low')return s.indexOf('low')>-1||s.indexOf('out')>-1;
+  if(filter==='per')return s.indexOf('exp')>-1||s.indexOf('soon')>-1;
+  return true}).sort(function(a,b){return a.name.localeCompare(b.name,'fr')});
+ if(!S.meds.length){$('#list').innerHTML='<div class="empty">Votre stock est vide.<br>Ajoutez un premier médicament ou chargez des exemples pour essayer.<br><br><button class="btn ghost" id="demo">Charger des exemples</button></div>';
+  $('#demo').onclick=demo;return}
+ if(!L.length){$('#list').innerHTML='<div class="empty">Aucun médicament ne correspond.</div>';return}
+ $('#list').innerHTML=L.map(function(m){var s=state(m),t='';
+  if(s.indexOf('exp')>-1)t+='<span class="tag bad">Périmé</span>';
+  else if(s.indexOf('soon')>-1)t+='<span class="tag warn">Expire dans '+days(m.exp)+' j</span>';
+  if(s.indexOf('out')>-1)t+='<span class="tag bad">Rupture</span>';
+  else if(s.indexOf('low')>-1)t+='<span class="tag warn">Stock bas</span>';
+  if(!t)t='<span class="tag">En stock</span>';
+  return '<div class="item"><div class="top"><div><b>'+esc(m.name)+'</b><div class="meta">'+fmt(m.price)+(adm()?' (achat '+fmt(m.cost||0)+')':'')+' · '+(m.exp?'Péremption '+dateFr(m.exp):'Sans date')+'</div></div><div style="text-align:right"><b style="font-size:20px">'+m.qty+'</b><div class="meta">en stock</div></div></div><div style="margin-top:6px">'+t+'</div>'+(adm()?'<div class="acts"><button class="btn ghost sm" data-r="'+m.id+'">Réapprovisionner</button><button class="btn ghost sm" data-e="'+m.id+'">Modifier</button><button class="btn ghost sm danger" data-d="'+m.id+'">Supprimer</button></div>':'')+'</div>'}).join('');
+ document.querySelectorAll('[data-e]').forEach(function(b){b.onclick=function(){openForm(b.dataset.e)}});
+ document.querySelectorAll('[data-r]').forEach(function(b){b.onclick=function(){addRecv(b.dataset.r);go('achats');window.scrollTo(0,0)}});
+ document.querySelectorAll('[data-d]').forEach(function(b){b.onclick=function(){
+  var m=S.meds.find(function(x){return x.id===b.dataset.d});
+  if(confirm('Supprimer « '+m.name+' » du stock ?')){S.meds=S.meds.filter(function(x){return x.id!==m.id});cart=cart.filter(function(c){return c.id!==m.id});sy('DELETE','meds/'+m.id);save();render();toast('Médicament supprimé')}}});
+}
+$('#q1').oninput=renderStock;
+function demo(){var d=new Date();function plus(n){var x=new Date(d);x.setDate(x.getDate()+n);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')}
+ S.meds=[{n:'Paracétamol 500 mg',p:0.5,q:120,m:20,e:plus(400)},{n:'Ibuprofène 400 mg',p:1,q:4,m:10,e:plus(300)},{n:'Amoxicilline 1 g',p:3,q:35,m:10,e:plus(45)},{n:'Sirop contre la toux',p:2,q:18,m:5,e:plus(-10)},{n:'Sérum physiologique',p:1,q:60,m:15,e:plus(700)}].map(function(x){return{id:uid(),name:x.n,price:x.p,qty:x.q,min:x.m,exp:x.e,cost:+(x.p*0.6).toFixed(2)}});
+ S.meds.forEach(function(m){sy('PUT','meds/'+m.id,m)});save();render()}
+
+/* Formulaire */
+var fInit={c:'',p:''};
+function fv(u){if(u===''||u==null)return '';return S.cur==='CDF'?Math.round(u*S.rate):Math.round(u*1e4)/1e4}
+function tu(v){v=parseFloat(v)||0;return S.cur==='CDF'?Math.round(v/S.rate*1e6)/1e6:v}
+function fi(k){var el=$(k==='c'?'#fc':'#fp'),old=editId?S.meds.find(function(x){return x.id===editId}):null;
+ if(old&&el.value===String(fInit[k]))return k==='c'?(old.cost||0):old.price;return tu(el.value)}
+function fl(){var c=S.cur==='CDF',u=c?'FC':'$';
+ document.querySelector('label[for=fc]').textContent="Prix d'achat ("+u+')';document.querySelector('label[for=fp]').textContent='Prix de vente ('+u+')';
+ [['#fc','#hnc'],['#fp','#hnp']].forEach(function(a){var v=parseFloat($(a[0]).value);$(a[1]).textContent=isNaN(v)?'':'≈ '+(c?usd(v/S.rate):cdf(v))})}
+$('#fc').oninput=fl;$('#fp').oninput=fl;
+function openForm(id){editId=id||null;var m=id?S.meds.find(function(x){return x.id===id}):{name:'',cost:'',price:'',qty:'',min:5,exp:''};
+ $('#dt').textContent=id?'Modifier le médicament':'Nouveau médicament';
+ $('#fn').value=m.name;fInit={c:fv(m.cost),p:fv(m.price)};$('#fc').value=fInit.c;$('#fp').value=fInit.p;fl();$('#fq').value=m.qty;$('#fm').value=m.min;$('#fe').value=m.exp||'';showSim();
+ $('#dlg').showModal()}
+
+/* Noms similaires (évite les doublons) */
+function nk(t){return String(t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim()}
+function nc(t){return nk(t).replace(/ /g,'')}
+function similar(name,skip){var q=nc(name);if(!q)return [];
+ return S.meds.filter(function(m){return m.id!==skip&&nc(m.name).indexOf(q)===0})
+  .sort(function(x,y){return x.name.localeCompare(y.name,'fr')}).slice(0,8).map(function(m){return{m:m,s:1}})}
+function showSim(){var L=similar($('#fn').value,editId),e=$('#sim');
+ if(!L.length){e.innerHTML='';return}
+ e.innerHTML='<div class="meta" style="margin:6px 0 4px">Déjà dans le stock :</div>'+L.map(function(x){var m=x.m;
+  return '<div style="border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:6px"><b style="font-size:14px">'+esc(m.name)+'</b><div class="meta">'+m.qty+' en stock</div><div class="row" style="margin-top:6px"><button type="button" class="btn ghost sm" data-sr="'+m.id+'">Réapprovisionner</button><button type="button" class="btn ghost sm" data-se="'+m.id+'">Modifier</button></div></div>'}).join('');
+ document.querySelectorAll('[data-sr]').forEach(function(b){b.onclick=function(){$('#dlg').close();addRecv(b.dataset.sr);go('achats');window.scrollTo(0,0)}});
+ document.querySelectorAll('[data-se]').forEach(function(b){b.onclick=function(){$('#dlg').close();openForm(b.dataset.se)}})}
+$('#fn').oninput=showSim;
+$('#add').onclick=function(){openForm()};
+$('#cancel').onclick=function(){$('#dlg').close()};
+$('#f').onsubmit=function(e){e.preventDefault();
+ var o={name:$('#fn').value.trim(),cost:fi('c'),price:fi('p'),qty:parseInt($('#fq').value,10)||0,min:parseInt($('#fm').value,10)||0,exp:$('#fe').value};
+ if(!o.name)return;
+ var dup=S.meds.find(function(x){return x.id!==editId&&nc(x.name)===nc(o.name)});
+ if(dup){toast('Ce médicament existe déjà : '+dup.name);return}
+ if(editId){S.meds=S.meds.map(function(x){return x.id===editId?Object.assign({},x,o):x})}else{o.id=uid();S.meds.push(o)}
+ var mid=editId||o.id;sy('PUT','meds/'+mid,S.meds.find(function(x){return x.id===mid}));save();$('#dlg').close();render();toast('Enregistré')};
+
+/* Vente */
+function renderSell(){
+ var q=$('#q2').value.trim().toLowerCase();
+ var F=q?S.meds.filter(function(m){return m.name.toLowerCase().indexOf(q)>-1}).slice(0,8):[];
+ $('#found').innerHTML=q&&!F.length?'<div class="meta">Aucun résultat.</div>':F.map(function(m){
+  var s=state(m),bad=s.indexOf('exp')>-1||m.qty<=0;
+  return '<div class="item"><div class="top"><div><b>'+esc(m.name)+'</b><div class="meta">'+fmt(m.price)+' · '+m.qty+' en stock</div>'+(s.indexOf('exp')>-1?'<span class="tag bad">Périmé</span>':'')+'</div><button class="btn sm" data-a="'+m.id+'"'+(bad?' disabled style="opacity:.4"':'')+'>Ajouter</button></div></div>'}).join('');
+ document.querySelectorAll('[data-a]').forEach(function(b){b.onclick=function(){
+  var m=S.meds.find(function(x){return x.id===b.dataset.a}),c=cart.find(function(x){return x.id===m.id});
+  if(c){if(c.q<m.qty)c.q++;else toast('Stock insuffisant')}else cart.push({id:m.id,q:1});renderSell()}});
+ if(!cart.length){$('#cart').innerHTML='<div class="empty">Le panier est vide.<br>Recherchez un médicament pour l\'ajouter.</div>';return}
+ var tot=0;
+ var h=cart.map(function(c){var m=S.meds.find(function(x){return x.id===c.id});tot+=m.price*c.q;
+  return '<div class="item"><div class="top"><div><b>'+esc(m.name)+'</b><div class="meta">'+fmt(m.price)+' × '+c.q+' = '+fmt(m.price*c.q)+'</div></div><div class="row"><button class="btn ghost sm" data-m="'+m.id+'" aria-label="Retirer un">−</button><b>'+c.q+'</b><button class="btn ghost sm" data-p="'+m.id+'" aria-label="Ajouter un">+</button></div></div></div>'}).join('');
+ $('#cart').innerHTML=h+'<label for="cl">Client (facultatif)</label><input id="cl" maxlength="60" value="'+esc(client)+'"><label for="cp">WhatsApp du client (facultatif)</label><input id="cp" type="tel" inputmode="tel" maxlength="20" placeholder="Ex. 0990000000" value="'+esc(cphone)+'"><div class="total"><span>Total</span><span>'+fmt(tot)+'</span></div><div class="row"><button class="btn ghost" id="clr">Vider</button><button class="btn ghost" id="pro">Proforma</button><button class="btn" id="ok" style="flex:1">Valider la vente</button></div>';
+ document.querySelectorAll('[data-m]').forEach(function(b){b.onclick=function(){var c=cart.find(function(x){return x.id===b.dataset.m});c.q--;if(c.q<=0)cart=cart.filter(function(x){return x!==c});renderSell()}});
+ document.querySelectorAll('[data-p]').forEach(function(b){b.onclick=function(){var c=cart.find(function(x){return x.id===b.dataset.p}),m=S.meds.find(function(x){return x.id===c.id});if(c.q<m.qty)c.q++;else toast('Stock insuffisant');renderSell()}});
+ $('#cl').oninput=function(){client=this.value};$('#cp').oninput=function(){cphone=this.value};
+ $('#clr').onclick=function(){cart=[];renderSell()};
+ $('#pro').onclick=makeProforma;
+ $('#ok').onclick=function(){
+  var items=[],total=0;
+  for(var i=0;i<cart.length;i++){var m=S.meds.find(function(x){return x.id===cart[i].id});
+   if(!m||m.qty<cart[i].q){toast('Stock insuffisant : '+(m?m.name:''));return}
+   if(m.exp&&days(m.exp)<0){toast('Produit périmé : '+m.name);return}
+   items.push({name:m.name,q:cart[i].q,price:m.price,cost:m.cost||0});total+=m.price*cart[i].q}
+  var cs=cart.slice();$('#ok').disabled=true;
+  nextNo(function(n){cs.forEach(function(c){S.meds.find(function(x){return x.id===c.id}).qty-=c.q;var q=incOp('meds/'+c.id,'qty',-c.q);sy(q[0],q[1],q[2])});
+  S.no=n;var sale={id:uid(),uid:S.me.id,user:S.me.name,no:S.no,date:new Date().toISOString(),client:client.trim(),phone:cphone.trim(),rate:S.rate,items:items,total:total};
+  sy('PUT','sales/'+sale.id,sale);S.sales.push(sale);cart=[];client='';cphone='';$('#q2').value='';save();render();showInv(sale)})}
+}
+$('#q2').oninput=renderSell;
+
+/* Achats : réapprovisionnement et factures d'achat */
+var rcart=[],rper='today',rsup='';
+function addRecv(id){if(!rcart.some(function(c){return c.id===id}))rcart.push({id:id,q:'',cost:'',exp:''})}
+function recvTot(){var t=0;rcart.forEach(function(c){var m=S.meds.find(function(x){return x.id===c.id}),q=parseInt(c.q,10)||0;if(!m)return;t+=q*(c.cost!==''&&!isNaN(parseFloat(c.cost))?tu(c.cost):(m.cost||0))});var e=$('#rtot');if(e)e.textContent=fmt(t)}
+function renderBuys(){
+ rcart=rcart.filter(function(c){return S.meds.some(function(x){return x.id===c.id})});
+ var q=$('#q3').value.trim().toLowerCase(),u=S.cur==='CDF'?'FC':'$';
+ var F=q?S.meds.filter(function(m){return m.name.toLowerCase().indexOf(q)>-1}).slice(0,8):[];
+ $('#rfound').innerHTML=q&&!F.length?'<div class="meta">Aucun résultat.</div>':F.map(function(m){
+  return '<div class="item"><div class="top"><div><b>'+esc(m.name)+'</b><div class="meta">'+m.qty+' en stock'+(m.exp?' · Péremption '+dateFr(m.exp):'')+'</div></div><button class="btn sm" data-ra="'+m.id+'">Ajouter</button></div></div>'}).join('');
+ document.querySelectorAll('[data-ra]').forEach(function(b){b.onclick=function(){addRecv(b.dataset.ra);$('#q3').value='';renderBuys()}});
+ if(!rcart.length){$('#rcart').innerHTML='<div class="empty">Aucun produit à réceptionner.<br>Recherchez un médicament, puis indiquez la quantité reçue.</div>'}
+ else{
+  $('#rcart').innerHTML=rcart.map(function(c){var m=S.meds.find(function(x){return x.id===c.id});
+   return '<div class="item"><div class="top"><div><b>'+esc(m.name)+'</b><div class="meta">Actuellement '+m.qty+' en stock'+(m.exp?' · Péremption '+dateFr(m.exp):'')+'</div></div><button class="btn ghost sm" data-rx="'+m.id+'" aria-label="Retirer">✕</button></div>'
+   +'<div class="g2"><div><label>Quantité reçue</label><input type="number" min="1" step="1" inputmode="numeric" data-rq="'+m.id+'" value="'+esc(String(c.q))+'"></div><div><label>Prix d\'achat ('+u+')</label><input type="number" min="0" step="any" inputmode="decimal" data-rc="'+m.id+'" value="'+esc(String(c.cost))+'" placeholder="'+(m.cost?esc(String(fv(m.cost))):'Facultatif')+'"></div></div>'
+   +'<label>Date de péremption du nouveau lot (facultatif)</label><input type="date" data-re="'+m.id+'" value="'+esc(c.exp)+'"></div>'}).join('')
+   +'<label for="rsup">Fournisseur (facultatif)</label><input id="rsup" maxlength="60" value="'+esc(rsup)+'"><div class="meta" style="margin-top:6px">Le prix d\'achat laissé vide garde le prix actuel. La date de péremption la plus proche est conservée sur la fiche.</div>'
+   +'<div class="total"><span>Total de l\'achat</span><span id="rtot">0</span></div><div class="row"><button class="btn ghost" id="rclr">Vider</button><button class="btn" id="rok" style="flex:1">Valider l\'achat</button></div>';
+  function cf(id){return rcart.find(function(x){return x.id===id})}
+  document.querySelectorAll('[data-rq]').forEach(function(i){i.oninput=function(){cf(i.dataset.rq).q=this.value;recvTot()}});
+  document.querySelectorAll('[data-rc]').forEach(function(i){i.oninput=function(){cf(i.dataset.rc).cost=this.value;recvTot()}});
+  document.querySelectorAll('[data-re]').forEach(function(i){i.onchange=function(){cf(i.dataset.re).exp=this.value}});
+  document.querySelectorAll('[data-rx]').forEach(function(b){b.onclick=function(){rcart=rcart.filter(function(x){return x.id!==b.dataset.rx});renderBuys()}});
+  $('#rsup').oninput=function(){rsup=this.value};
+  $('#rclr').onclick=function(){rcart=[];rsup='';renderBuys()};
+  $('#rok').onclick=validBuy;recvTot()}
+ var defs=[['today',"Aujourd'hui"],['7','7 jours'],['30','30 jours'],['all','Tout']];
+ $('#rchips').innerHTML=defs.map(function(d){return '<button class="chip" data-rp="'+d[0]+'" aria-pressed="'+(rper===d[0])+'">'+d[1]+'</button>'}).join('');
+ document.querySelectorAll('[data-rp]').forEach(function(c){c.onclick=function(){rper=c.dataset.rp;renderBuys()}});
+ var now=new Date(),A=S.buys.filter(function(b){var d=new Date(b.date);if(rper==='today')return d.toDateString()===now.toDateString();if(rper==='7')return now-d<=7*864e5;if(rper==='30')return now-d<=30*864e5;return true}).sort(function(a,b){return a.date<b.date?1:-1});
+ $('#rn').textContent=A.length;$('#rt').textContent=fmt(A.reduce(function(a,b){return a+(b.total||0)},0));
+ if(!A.length){$('#rl').innerHTML='<div class="empty">'+(rper==='today'?"Aucun achat aujourd'hui.":'Aucun achat sur cette période.')+'</div>';return}
+ $('#rl').innerHTML=A.slice(0,100).map(function(b){
+  return '<div class="item"><div class="top"><div><b>'+new Date(b.date).toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'})+'</b><div class="meta">Achat'+(b.supplier?' · '+esc(b.supplier):'')+(b.user?' · '+esc(b.user):'')+'</div></div><b>'+fmt(b.total||0)+'</b></div>'
+  +b.items.map(function(i){return '<div class="meta" style="margin-top:4px">'+esc(i.name)+' × '+i.q+' · '+fmt(i.cost||0)+' l\'unité'+(i.exp?' · Péremption '+dateFr(i.exp):'')+'</div>'}).join('')+'</div>'}).join('')
+}
+$('#q3').oninput=renderBuys;
+function validBuy(){
+ var items=[],total=0,i;
+ for(i=0;i<rcart.length;i++){var c=rcart[i],m=S.meds.find(function(x){return x.id===c.id}),q=parseInt(c.q,10);
+  if(!m)continue;if(!q||q<=0){toast('Quantité à saisir : '+m.name);return}
+  var hc=c.cost!==''&&!isNaN(parseFloat(c.cost));
+  items.push({id:m.id,name:m.name,q:q,cost:hc?tu(c.cost):(m.cost||0),exp:c.exp||'',hc:hc});total+=q*(hc?tu(c.cost):(m.cost||0))}
+ if(!items.length){toast('Ajoutez au moins un produit');return}
+ $('#rok').disabled=true;
+ items.forEach(function(it){var m=S.meds.find(function(x){return x.id===it.id}),ne=m.exp,patch={qty:{'.sv':{increment:it.q}}};
+  if(it.exp&&(!m.exp||m.qty<=0||days(m.exp)<0||it.exp<m.exp))ne=it.exp;
+  m.qty+=it.q;
+  if(it.hc){m.cost=it.cost;patch.cost=it.cost}
+  if((ne||'')!==(m.exp||'')){m.exp=ne;patch.exp=ne}
+  sy('PATCH','meds/'+m.id,patch)});
+ var b={id:uid(),uid:S.me.id,user:S.me.name,date:new Date().toISOString(),supplier:rsup.trim(),items:items.map(function(it){return{id:it.id,name:it.name,q:it.q,cost:it.cost,exp:it.exp}}),total:total};
+ sy('PUT','buys/'+b.id,b);S.buys.push(b);rcart=[];rsup='';rper='today';$('#q3').value='';save();render();toast('Achat enregistré : stock mis à jour')}
+
+/* Historique */
+function renderHist(){
+ var t=today(),A=mine(),td=A.filter(function(s){return s.date.slice(0,10)===t||new Date(s.date).toDateString()===new Date().toDateString()});
+ $('#hn').textContent=td.length;$('#ht').textContent=fmt(td.reduce(function(a,s){return a+s.total},0));
+ if(!A.length){$('#hl').innerHTML='<div class="empty">Aucune vente pour le moment.<br>Les ventes validées apparaîtront ici.</div>';return}
+ $('#hl').innerHTML=A.slice().reverse().slice(0,100).map(function(s){
+  return '<div class="item"><div class="top"><b>'+new Date(s.date).toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'})+'</b><b>'+fmt(s.total)+'</b></div><div class="meta">'+s.items.map(function(i){return esc(i.name)+' × '+i.q}).join(', ')+(adm()&&s.user?' — '+esc(s.user):'')+'</div><div class="acts"><button class="btn ghost sm" data-v="'+s.id+'">Facture '+(s.no?pad(s.no):'')+'</button></div></div>'}).join('');
+ document.querySelectorAll('[data-v]').forEach(function(b){b.onclick=function(){showInv(S.sales.find(function(x){return x.id===b.dataset.v}))}})
+}
+
+var per='7';
+function lock(){AUTH=null;CRED=null;S.me=null;client='';cphone='';cart=[];$('#app').classList.add('hide');$('#lg').classList.remove('hide');renderLogin()}
+
+/* Historique de connexion : suppression automatique des anciennes entrées */
+function pruneLogs(force){
+ var cut=Date.now()-(S.logDays||30)*864e5,iso=new Date(cut).toISOString();
+ S.logins=S.logins.filter(function(e){return e.date>=iso});
+ if(!base()||(!force&&Date.now()-(S.lastPrune||0)<864e5))return;
+ S.lastPrune=Date.now();save();
+ J('GET','logins',undefined,'?orderBy=%22%24key%22&endAt=%22'+cut.toString(36)+'%22').then(function(r){
+  var d={},n=0;Object.keys(r||{}).forEach(function(k){if(r[k]&&r[k].date<iso){d[k]=null;n++}});
+  if(n)sy('PATCH','logins',d)}).catch(function(){})}
+function devName(){var a=navigator.userAgent;return /iPhone|iPad/.test(a)?'iPhone/iPad':/Android/.test(a)?'Android':/Windows/.test(a)?'Windows':/Mac/.test(a)?'Mac':/Linux/.test(a)?'Linux':'Appareil'}
+function logEv(u,ok){var e={id:uid(),uid:u.id,user:u.name,role:u.role,date:new Date().toISOString(),ok:ok,dev:devName()};S.logins.push(e);if(S.logins.length>300)S.logins=S.logins.slice(-300);sy('PUT','logins/'+e.id,e);pruneLogs();save()}
+function enter(u){logEv(u,true);S.me=u;$('#lg').classList.add('hide');$('#app').classList.remove('hide');$('#who').textContent=u.name+' · '+(adm()?'Administrateur':'Caissier');
+ document.querySelectorAll('.adm').forEach(function(e){e.classList.toggle('hide',!adm())});go(adm()?'stock':'vente');if(adm()&&(!S.lastBk||Date.now()-new Date(S.lastBk)>6048e5))setTimeout(function(){toast('Pensez à faire une sauvegarde (Réglages)')},700)}
+$('#out').onclick=lock;
+$('#mypin').onclick=function(){$('#pf').reset();$('#pdlg').showModal()};
+$('#pcancel').onclick=function(){$('#pdlg').close()};
+$('#pf').onsubmit=function(e){e.preventDefault();var o=$('#po').value,n=$('#pn').value,n2=$('#pn2').value;
+ if(!/^\d{4,8}$/.test(n)){toast('Nouveau PIN : 4 à 8 chiffres');return}
+ if(n!==n2){toast('Les deux nouveaux codes ne correspondent pas');return}
+ if(n===o){toast('Le nouveau PIN doit être différent');return}
+ var b=$('#psave');b.disabled=true;
+ changePin(o,n).then(function(r){b.disabled=false;
+  if(r===true){$('#pdlg').close();toast('PIN modifié');return}
+  toast(r==='wrong'?'PIN actuel incorrect':r==='many'?'Trop d\'essais. Réessayez dans quelques minutes.':r==='offline'?'Internet requis pour changer le PIN':r==='nocrypto'?aMsg('nocrypto'):'Erreur : '+r)})};
+function renderLogin(){var c=$('#lgc');
+ if(!S.users.length&&DEF.url){renderFirst();return}
+ if(!S.users.length){
+  c.innerHTML='<b>Créer le compte administrateur</b><div class="meta">Il gère le stock, les prix, les bénéfices et les caissiers.</div><label for="ln">Nom</label><input id="ln" maxlength="40"><label for="lp">Code PIN (4 à 8 chiffres)</label><input id="lp" type="password" inputmode="numeric" maxlength="8"><div style="margin-top:14px"><button class="btn" id="lgo" style="width:100%">Créer et entrer</button></div>';
+  $('#lgo').onclick=function(){var n=$('#ln').value.trim(),p=$('#lp').value;if(!n||!/^\d{4,8}$/.test(p)){toast('Nom et PIN (4 à 8 chiffres) requis');return}hp(p).then(function(h){var u={id:uid(),name:n,role:'admin',pin:h};S.users.push(u);sy('PUT','users/'+u.id,u);save();enter(u)})}
+ }else{
+  c.innerHTML='<label for="lu">Utilisateur</label><select id="lu" style="width:100%">'+S.users.map(function(u){return '<option value="'+u.id+'">'+esc(u.name)+' ('+(u.role==='admin'?'admin':'caissier')+')</option>'}).join('')+'</select><label for="lp">Code PIN</label><input id="lp" type="password" inputmode="numeric" maxlength="8"><div style="margin-top:14px"><button class="btn" id="lgo" style="width:100%">Se connecter</button></div>';
+  $('#lgo').onclick=function(){var u=S.users.find(function(x){return x.id===$('#lu').value});if(!sec()&&u&&!u.pin){setPin(u);return}if(!u){toast('PIN incorrect');return}var w=lkLeft(u.id);if(w){toast('Trop d\'essais. Réessayez dans '+w+' s');return}(sec()?secLogin(u,$('#lp').value):chk(u,$('#lp').value)).then(function(ok){if(ok===true){lkOk(u.id);enter(u);if(sec()){setTimeout(tick,400);setTimeout(licCheck,1500)}}else if(ok==='many'){toast('Trop d\'essais. Réessayez dans quelques minutes.')}else if(ok==='offline'){toast('Internet requis pour la première connexion sur cet appareil')}else if(ok==='nocrypto'){toast(aMsg('nocrypto'))}else if(ok==='config'){toast(aMsg('API key'))}else{logEv(u,false);lkFail(u.id);toast(sec()?'PIN incorrect ou compte non activé':'PIN incorrect');$('#lp').value=''}})}
+ }
+ $('#lp').onkeydown=function(e){if(e.key==='Enter')$('#lgo').click()}}
+function renderBilan(){
+ var P=[['1',"Aujourd'hui"],['7','7 jours'],['30','30 jours'],['0','Tout']],st=0;
+ if(per!=='0'){var d=new Date();d.setHours(0,0,0,0);st=d.getTime()-(+per-1)*864e5}
+ var A=S.sales.filter(function(v){return new Date(v.date).getTime()>=st}),rev=0,cost=0,by={},old=false;
+ A.forEach(function(v){v.items.forEach(function(i){if(i.cost==null)old=true;cost+=(i.cost||0)*i.q});rev+=v.total;var k=v.user||'—';by[k]=by[k]||{n:0,t:0};by[k].n++;by[k].t+=v.total});
+ var gain=rev-cost,val=S.meds.reduce(function(a,m){return a+(m.cost||0)*m.qty},0);
+ var h='<div class="chips">'+P.map(function(c){return '<button class="chip" data-p="'+c[0]+'" aria-pressed="'+(per===c[0])+'">'+c[1]+'</button>'}).join('')+'</div>';
+ h+='<div class="item"><div class="line"><span>Ventes</span><b>'+fmt(rev)+'</b></div><div class="line"><span>Coût d\'achat</span><b>'+fmt(cost)+'</b></div><div class="line"><span>Bénéfice</span><b class="'+(gain>=0?'pos':'neg')+'">'+fmt(gain)+'</b></div><div class="meta">'+A.length+' vente(s)'+(old?' · les ventes sans prix d\'achat comptent un coût de 0':'')+'</div></div>';
+ h+='<div class="item"><div class="line" style="padding:0"><span>Valeur du stock (prix d\'achat)</span><b>'+fmt(val)+'</b></div></div>';
+ var sv=S.meds.reduce(function(a,m){return a+(m.price||0)*Math.max(m.qty||0,0)},0),nq=S.meds.filter(function(m){return m.qty>0}).length;
+ h+='<div class="item"><div class="line" style="padding:0"><span>Valeur du stock (prix de vente)</span><b>'+fmt(sv)+'</b></div><div class="meta">'+nq+' produit(s) en stock sur '+S.meds.length+'</div></div>';
+ function mr(o){var d=new Date();return [new Date(d.getFullYear(),d.getMonth()+o,1),new Date(d.getFullYear(),d.getMonth()+o+1,1)]}
+ function ag(r){var a=0,c=0,n=0,t0=r[0].getTime(),t1=r[1].getTime();S.sales.forEach(function(v){var t=new Date(v.date).getTime();if(t>=t0&&t<t1){n++;a+=v.total;v.items.forEach(function(i){c+=(i.cost||0)*i.q})}});return {rev:a,cost:c,n:n,gain:a-c}}
+ function vr(a,b){if(!b)return a?'<span class="meta">nouveau</span>':'<span class="meta">—</span>';var p=(a-b)/b*100;return '<span class="'+(p>=0?'pos':'neg')+'">'+(p>=0?'+':'')+p.toFixed(0)+' %</span>'}
+ var m0=mr(0),m1=mr(-1),A0=ag(m0),A1=ag(m1),mn=function(r){return r[0].toLocaleDateString('fr-FR',{month:'long',year:'numeric'})};
+ h+='<h2 style="font-size:17px;margin:16px 0 8px">Comparaison mensuelle</h2><div class="item"><div class="meta" style="margin-bottom:6px">'+esc(mn(m0))+' comparé à '+esc(mn(m1))+'</div>'
+  +[['Ventes',A0.rev,A1.rev,1],['Bénéfice',A0.gain,A1.gain,1],['Nombre de ventes',A0.n,A1.n,0]].map(function(r){return '<div class="line"><span>'+r[0]+'</span><span><b>'+(r[3]?fmt(r[1]):r[1])+'</b> <span class="meta">contre '+(r[3]?fmt(r[2]):r[2])+'</span> '+vr(r[1],r[2])+'</span></div>'}).join('')
+  +(A1.n?'':'<div class="meta">Aucune vente le mois passé dans l\'application.</div>')+'</div>';
+ var K=Object.keys(by);
+ if(K.length)h+='<h2 style="font-size:17px;margin:16px 0 8px">Par vendeur</h2>'+K.map(function(n){return '<div class="item"><div class="line" style="padding:0"><span>'+esc(n)+' <span class="meta">('+by[n].n+' vente(s))</span></span><b>'+fmt(by[n].t)+'</b></div></div>'}).join('');
+ $('#bilan').innerHTML=h;
+ document.querySelectorAll('[data-p]').forEach(function(b){b.onclick=function(){per=b.dataset.p;renderBilan()}})}
+function baseUrl(){if(S.appUrl)return S.appUrl;return /^https?:$/.test(location.protocol)&&!/claude/i.test(location.hostname)?location.href.split('#')[0]:''}
+function copyTxt(t){function fb(){var a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;opacity:0';document.body.appendChild(a);a.select();try{document.execCommand('copy');toast('Copié')}catch(e){toast('Copie impossible')}a.remove()}
+ try{navigator.clipboard.writeText(t).then(function(){toast('Copié')},fb)}catch(e){fb()}}
+function invLink(u){var o=Object.assign({i:u.id,n:u.name,r:u.role,e:u.email||''},S.db?{d:S.db.url,k:S.db.key}:{});
+ if(sec()){var t=rk();o.a=S.db.api;o.t=t;o.g=u.g||0;sy('PUT','invites/'+t,{u:u.id,r:u.role,x:Date.now()+6048e5})}
+ var j=btoa(unescape(encodeURIComponent(JSON.stringify(o))));return baseUrl()+'#invite='+encodeURIComponent(j)}
+function invMail(u){var rl=u.role==='admin'?'administrateur':'caissier',sh=S.shop.name||'la pharmacie';
+ var body='Bonjour '+u.name+',\n\nVous êtes invité(e) à utiliser le logiciel de gestion de '+sh+' en tant que '+rl+'.\n\nOuvrez ce lien, puis choisissez votre code PIN :\n'+invLink(u)+'\n\nCordialement,\n'+S.me.name;
+ return 'mailto:'+u.email+'?subject='+encodeURIComponent('Invitation - '+sh)+'&body='+encodeURIComponent(body)}
+function openMail(u){try{var a=document.createElement('a');a.href=invMail(u);a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove()}catch(e){}}
+function setPin(u,tk){$('#app').classList.add('hide');$('#lg').classList.remove('hide');
+ $('#lgc').innerHTML='<b>Bienvenue '+esc(u.name)+'</b><div class="meta">Rôle : '+(u.role==='admin'?'Administrateur':'Caissier')+'. Choisissez votre code PIN.</div><label for="np">Code PIN (4 à 8 chiffres)</label><input id="np" type="password" inputmode="numeric" maxlength="8"><label for="np2">Confirmer le code PIN</label><input id="np2" type="password" inputmode="numeric" maxlength="8"><div style="margin-top:14px"><button class="btn" id="npo" style="width:100%">Activer mon compte</button></div>';
+ $('#npo').onclick=function(){var a=$('#np').value;if(!/^\d{4,8}$/.test(a)){toast('PIN : 4 à 8 chiffres');return}if(a!==$('#np2').value){toast('Les deux codes ne correspondent pas');return}if(sec()){$('#npo').disabled=true;activate(u,a,tk).then(function(){enter(u);setTimeout(function(){pull(true).then(function(){render()})},300);setTimeout(licCheck,1500)},function(e){$('#npo').disabled=false;toast(aMsg(e))});return}hp(a).then(function(h){u.pin=h;sy('PUT','users/'+u.id,u);save();enter(u)})}}
+function checkInvite(){var m=location.hash.match(/invite=([^&]+)/);if(!m)return;
+ try{var d=JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1])))));
+  if(d.d&&d.k){S.db={url:String(d.d),key:String(d.k)};if(d.a)S.db.api=String(d.a);save()}
+  try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}
+  var go=function(){var u=S.users.find(function(x){return x.id===d.i});
+   if(!u){u={id:String(d.i),name:String(d.n),role:d.r==='admin'?'admin':'cashier',email:String(d.e||''),pin:'',g:+d.g||0};S.users.push(u);if(!sec())sy('PUT','users/'+u.id,u);save()}
+   if(sec()){u.g=(d.g===undefined?u.g:+d.g)||0;save();setPin(u,String(d.t||''));return}
+   if(!u.pin)setPin(u);else{renderLogin();toast('Compte déjà activé : connectez-vous')}};
+  if(base())pull(true).then(go);else go()}catch(e){}}
+function lastConn(u){var l=S.logins.filter(function(e){return e.uid===u.id&&e.ok}).sort(function(a,b){return a.date<b.date?1:-1})[0];return l?'<div class="meta">Dernière connexion : '+new Date(l.date).toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'})+'</div>':''}
+function connHist(){var iso=new Date(Date.now()-(S.logDays||30)*864e5).toISOString(),L=S.logins.filter(function(e){return e.date>=iso}).sort(function(a,b){return a.date<b.date?1:-1}).slice(0,50);
+ return '<h2 style="font-size:17px;margin:20px 0 8px">Historique de connexion</h2>'+(L.length?L.map(function(e){return '<div class="item"><div class="top"><div><b>'+esc(e.user)+'</b><div class="meta">'+(e.role==='admin'?'Administrateur':'Caissier')+(e.dev?' · '+esc(e.dev):'')+'</div></div><div style="text-align:right"><div>'+new Date(e.date).toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'})+'</div>'+(e.ok?'<span class="tag">Connexion</span>':'<span class="tag bad">PIN incorrect</span>')+'</div></div></div>'}).join(''):'<div class="empty">Aucune connexion enregistrée pour le moment.</div>')}
+function renderTeam(){
+ var h=baseUrl()?'':'<div class="item"><b>Lien de l\'application manquant</b><div class="meta">Hébergez l\'application en ligne (Netlify, GitHub Pages…), puis collez son adresse dans Réglages. Sans cela, les invitations n\'ont pas de lien valable. Le lien claude.ai ne convient pas : il demande un compte Claude.</div></div>';
+ h+=S.users.map(function(u){var me=u.id===S.me.id;return '<div class="item"><div class="top"><div><b>'+esc(u.name)+'</b><div class="meta">'+(u.role==='admin'?'Administrateur':'Caissier')+(me?' · vous':'')+'</div>'+lastConn(u)+(u.email?'<div class="meta">'+esc(u.email)+'</div>':'')+(isAct(u)?'':'<span class="tag warn">En attente d\'activation</span>')+'</div></div><div class="acts">'+(u.email&&!me?(baseUrl()?'<a class="btn ghost sm" style="text-decoration:none;display:inline-flex;align-items:center" target="_blank" rel="noopener" href="'+(sec()?'#':esc(invMail(u)))+'" data-m="'+u.id+'">'+(isAct(u)?'Renvoyer l\'invitation':'Envoyer l\'invitation')+'</a><button class="btn ghost sm" data-c="'+u.id+'">Copier le lien</button>':'<button class="btn ghost sm" data-s="1">Envoyer l\'invitation</button>'):'')+'<button class="btn ghost sm" data-k="'+u.id+'">'+(sec()?'Réinitialiser l\'accès':(u.pin?'Changer le PIN':'Définir le PIN'))+'</button>'+(me?'':'<button class="btn ghost sm danger" data-x="'+u.id+'">Supprimer</button>')+'</div></div>'}).join('');
+ h+='<div class="item"><b>Inviter un utilisateur</b><label for="tn">Nom</label><input id="tn" maxlength="40"><label for="te">Adresse e-mail</label><input id="te" type="email" inputmode="email" maxlength="80"><label for="tr">Rôle</label><select id="tr" style="width:100%"><option value="cashier">Caissier</option><option value="admin">Administrateur</option></select><div class="meta" style="margin-top:8px">La personne reçoit un lien par e-mail et choisit elle-même son code PIN.</div><div style="margin-top:12px"><button class="btn" id="tadd">Ajouter et inviter</button></div></div>';
+  h+=connHist();
+ $('#equipe').innerHTML=h;
+ document.querySelectorAll('[data-m]').forEach(function(b){b.onclick=function(e){if(!sec())return;e.preventDefault();openMail(S.users.find(function(z){return z.id===b.dataset.m}))}});
+ document.querySelectorAll('[data-k]').forEach(function(b){b.onclick=function(){if(sec()){resetAccess(b.dataset.k);return}var p=prompt('Nouveau code PIN (4 à 8 chiffres)');if(p===null)return;if(!/^\d{4,8}$/.test(p)){toast('PIN invalide');return}var uu=S.users.find(function(u){return u.id===b.dataset.k});hp(p).then(function(h){uu.pin=h;lkOk(uu.id);sy('PUT','users/'+uu.id,uu);save();render();toast('PIN enregistré')})}});
+ document.querySelectorAll('[data-x]').forEach(function(b){b.onclick=function(){var u=S.users.find(function(z){return z.id===b.dataset.x});if(confirm('Supprimer l\'utilisateur « '+u.name+' » ?')){var fin=function(){S.users=S.users.filter(function(z){return z!==u});sy('DELETE','users/'+u.id);save();render();toast('Utilisateur supprimé')};if(sec())revoke(u.id).then(fin,function(){toast('Internet requis pour retirer l\'accès')});else fin()}}});
+ document.querySelectorAll('[data-c]').forEach(function(b){b.onclick=function(){copyTxt(invLink(S.users.find(function(u){return u.id===b.dataset.c})))}});
+ document.querySelectorAll('[data-s]').forEach(function(b){b.onclick=function(){$('#set').click()}});
+ $('#tadd').onclick=function(){var n=$('#tn').value.trim(),e=$('#te').value.trim();if(!n||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){toast('Nom et e-mail valide requis');return}
+  if(S.users.some(function(u){return u.name.toLowerCase()===n.toLowerCase()})){toast('Ce nom existe déjà');return}
+  var u={id:uid(),name:n,email:e,role:$('#tr').value,pin:''};S.users.push(u);sy('PUT','users/'+u.id,u);save();render();if(baseUrl()){toast('Utilisateur ajouté : message d\'invitation prêt');openMail(u)}else toast('Ajouté. Renseignez d\'abord le lien de l\'application dans Réglages')}}
+/* Synchronisation en ligne (Firebase Realtime Database, API REST) */
+var flushing=false,lastSig='',lastV=null;
+function rk(){var a=new Uint8Array(16);crypto.getRandomValues(a);return Array.from(a,function(b){return b.toString(36).padStart(2,'0')}).join('')}
+function base(){return S.db&&S.db.url?S.db.url.replace(/\/+$/,'')+'/p/'+S.db.key:''}
+function J(m,path,body,qs){var go=function(t){var q=qs||'';if(t)q+=(q?'&':'?')+'auth='+encodeURIComponent(t);
+  return fetch(base()+(path?'/'+path:'')+'.json'+q,{method:m,body:body===undefined?undefined:JSON.stringify(body)}).then(function(r){if(!r.ok)throw r.status;return r.json()})};
+ return sec()?tok().then(go):go('')}
+function setSt(ok){var e=$('#sync');if(!e)return;e.textContent=!base()?'':ok===false?'⚠ Hors connexion'+(S.q.length?' ('+S.q.length+' en attente)':''):'☁ Synchronisé'}
+function sy(m,path,body){if(!base())return;if(sec()&&body&&typeof body==='object'&&/^users\//.test(path)&&'pin' in body){body=Object.assign({},body);delete body.pin}S.q.push([m,path,body===undefined?null:body]);save();flush()}
+function flush(){if(!base()||flushing)return Promise.resolve();flushing=true;var did=0;
+ function next(){if(!S.q.length){var f=function(){flushing=false};if(did){did=0;return J.apply(null,incOp('meta','v',1)).then(f,f)}f();return Promise.resolve()}
+  var o=S.q[0];return J(o[0],o[1],o[2]===null&&o[0]==='DELETE'?undefined:o[2]).then(function(){S.q.shift();did++;save();return next()},function(e){if(sec()&&(e===401||e===403)){return JL('licenses/'+S.db.key+'/x').then(function(x){if(x&&x<Date.now())throw e;S.q.shift();save();deniedOp();return next()},function(){throw e})}throw e})}
+ return next().catch(function(){flushing=false;setSt(false)})}
+function o2a(o){return o?Object.keys(o).map(function(k){return Object.assign({id:k},o[k])}):[]}
+function pull(force){if(!base())return Promise.resolve(false);
+ return flush().then(function(){if(S.q.length)return false;
+  return (force?Promise.resolve(null):J('GET','meta/v')).then(function(v){
+   if(!force&&(v||0)===lastV){setSt(true);return false}
+   return Promise.all([J('GET','meta'),J('GET','meds'),J('GET','users'),J('GET','sales',undefined,'?orderBy=%22%24key%22&limitToLast=300'),(adm()||!sec()?J('GET','buys',undefined,'?orderBy=%22%24key%22&limitToLast=300'):Promise.resolve(null)),(adm()||!sec()?J('GET','logins',undefined,'?orderBy=%22%24key%22&limitToLast=200'):Promise.resolve(null)),(adm()&&sec()?J('GET','members'):Promise.resolve(null)),(adm()||!sec()?J('GET','inventories',undefined,'?orderBy=%22%24key%22&limitToLast=30'):Promise.resolve(null))]).then(function(r){
+    setSt(true);lastV=(r[0]&&r[0].v)||0;var sig=JSON.stringify(r);if(sig===lastSig)return false;lastSig=sig;var m=r[0]||{};
+    if(r[6]){S.act={};Object.keys(r[6]).forEach(function(k){if(r[6][k]&&r[6][k].u)S.act[r[6][k].u]=1})}S.meds=o2a(r[1]);S.users=o2a(r[2]);S.sales=o2a(r[3]).sort(function(a,b){return a.date<b.date?-1:1});S.buys=o2a(r[4]).sort(function(a,b){return a.date<b.date?-1:1});S.logins=o2a(r[5]).sort(function(a,b){return a.date<b.date?-1:1});if(adm()||!sec()){S.inv=o2a(r[7]).sort(function(a,b){return a.ts<b.ts?-1:1});ivPrune()}if(S.me&&S.me.role==='admin')pruneLogs();
+    if(m.shop)S.shop=m.shop;if(m.rate)S.rate=m.rate;if(m.logDays)S.logDays=m.logDays;S.no=Math.max(S.no||0,m.no||0);
+    cart=cart.filter(function(c){return S.meds.some(function(x){return x.id===c.id})});save();return true})})
+ }).catch(function(e){if(sec()&&(e===401||e===403))checkAccess();setSt(false);return false})}
+function nextNo(cb){var loc=(S.no||0)+1;if(!base()){cb(loc);return}
+ J.apply(null,incOp('meta','no',1)).then(function(){return J('GET','meta/no')}).then(function(n){cb(+n||loc)},function(){cb(loc)})}
+function connect(){S.q=[];save();toast('Connexion à la base…');
+ return (sec()?J('GET','users').then(function(u){return u?{users:u}:null}):J('GET','')).then(function(cur){
+  if(cur&&(cur.meds||cur.users||cur.sales||cur.buys)){
+   if(!confirm('Cette base contient déjà des données. Les utiliser à la place de celles de cet appareil ?')){S.db=null;save();setSt();return}
+   lastSig='';return pull(true).then(function(){if(sec())S.users.forEach(function(u){if(u.pin)sy('PUT','users/'+u.id,u)});render();toast('Base connectée')})}
+  var o={meds:{},users:{},sales:{},buys:{},logins:{},inventories:{},invl:{},meta:{shop:S.shop,rate:S.rate,no:S.no||0,v:1}};
+  S.meds.forEach(function(m){o.meds[m.id]=m});S.users.forEach(function(u){var c=Object.assign({},u);if(sec())delete c.pin;o.users[u.id]=c});S.sales.forEach(function(v){o.sales[v.id]=v});S.buys.forEach(function(v){o.buys[v.id]=v});S.logins.forEach(function(v){o.logins[v.id]=v});S.inv.forEach(function(v){o.inventories[v.id]=v});o.invl=JSON.parse(JSON.stringify(S.invl));
+  return (sec()?putAll(o):J('PUT','',o)).then(function(){setSt(true);toast('Base connectée : données envoyées')})
+ }).catch(function(){S.db=null;save();setSt();toast("Connexion impossible : vérifiez l'adresse et les règles")})}
+function softRender(){var a=document.activeElement;if(document.querySelector('dialog[open]'))return;if(a&&/INPUT|SELECT|TEXTAREA/.test(a.tagName)&&($('#equipe').contains(a)||$('#achats').contains(a)||$('#inventaire').contains(a)))return;render()}
+function tick(){if(S.me&&base()&&!document.hidden)pull().then(function(ch){if(ch)softRender()})}
+setInterval(tick,8000);document.addEventListener('visibilitychange',function(){if(!document.hidden)tick()});
+$('#rules2').onclick=function(){copyTxt(secRules(false));toast('Règles sécurisées copiées')};
+$('#rules').onclick=function(){copyTxt('{"rules":{".read":false,".write":false,"p":{"$k":{".read":true,".write":true}}}}')};
+/* Sauvegarde et restauration par fichier */
+function showBk(){$('#bkd').textContent=S.lastBk?'Dernière sauvegarde : '+new Date(S.lastBk).toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'}):"Aucune sauvegarde pour l'instant"}
+function m2o(a){var o={};a.forEach(function(x){o[x.id]=x});return o}
+function dl(name,text){var bytes=new TextEncoder().encode(text);
+ function fb(){try{var u=URL.createObjectURL(new Blob([bytes],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},4000);toast('Fichier enregistré : '+name)}catch(e){toast('Téléchargement impossible ici')}}
+ try{if(window.claude&&window.claude.use){window.claude.use('downloads').then(function(d){if(!d){fb();return}d.save({filename:name,data:bytes}).then(function(){toast('Fichier enregistré')},function(){})},fb);return}}catch(e){}
+ fb()}
+function backup(){
+ function done(o,note){var d=new Date();dl('sauvegarde-pharmacie-'+d.toISOString().slice(0,10)+'.json',JSON.stringify({format:'pharmacie-backup',version:1,date:d.toISOString(),meds:o.meds||{},users:o.users||{},sales:o.sales||{},buys:o.buys||{},logins:o.logins||{},inventories:o.inventories||{},invl:o.invl||{},meta:o.meta||{}}));S.lastBk=d.toISOString();save();showBk();if(note)toast(note)}
+ var loc={meds:m2o(S.meds),users:m2o(S.users),sales:m2o(S.sales),buys:m2o(S.buys),logins:m2o(S.logins),inventories:m2o(S.inv),invl:S.invl,meta:{shop:S.shop,rate:S.rate,no:S.no}};
+ if(base())(sec()?bkRemote():J('GET','')).then(function(r){r=r||{};done({meds:r.meds,users:r.users,sales:r.sales,buys:r.buys,logins:r.logins,inventories:r.inventories,invl:r.invl,meta:r.meta||loc.meta})},function(){done(loc,'Hors connexion : copie de cet appareil')});
+ else done(loc)}
+function restore(d){
+ var u=d.users||{};if(!Object.keys(u).some(function(k){return k===S.me.id||(u[k]&&u[k].id===S.me.id)}))u[S.me.id]=S.me;
+ var m=d.meta||{},o={meds:d.meds||{},users:u,sales:d.sales||{},buys:d.buys||{},logins:d.logins||{},inventories:d.inventories||{},invl:d.invl||{},meta:Object.assign({},m,{v:Date.now()})};
+ S.meds=o2a(o.meds);S.users=o2a(u);S.sales=o2a(o.sales).sort(function(a,b){return a.date<b.date?-1:1});S.buys=o2a(o.buys).sort(function(a,b){return a.date<b.date?-1:1});S.logins=o2a(o.logins).sort(function(a,b){return a.date<b.date?-1:1});S.inv=o2a(o.inventories).sort(function(a,b){return a.ts<b.ts?-1:1});S.invl=o.invl;ivview=null;
+ if(m.shop)S.shop=m.shop;if(m.rate)S.rate=m.rate;if(m.logDays)S.logDays=m.logDays;S.no=m.no||0;cart=[];S.q=[];lastSig='';save();render();
+ if(base())(sec()?putAll(secStrip(o)):J('PUT','',o)).then(function(){toast('Sauvegarde restaurée et envoyée en ligne')},function(){toast('Restaurée sur cet appareil seulement : connexion impossible')});
+ else toast('Sauvegarde restaurée')}
+$('#bk').onclick=backup;$('#rs').onclick=function(){$('#rf').click()};
+$('#rf').onchange=function(){var f=this.files[0];this.value='';if(!f)return;var r=new FileReader();
+ r.onload=function(){var d;try{d=JSON.parse(r.result)}catch(e){toast('Fichier illisible');return}
+  if(!d||d.format!=='pharmacie-backup'){toast("Ce n'est pas une sauvegarde de la pharmacie");return}
+  if(confirm('Remplacer TOUTES les données actuelles par cette sauvegarde ('+Object.keys(d.meds||{}).length+' produits, '+Object.keys(d.sales||{}).length+' ventes, '+Object.keys(d.buys||{}).length+' achats) ?')){$('#sdlg').close();restore(d)}};
+ r.readAsText(f)};
+/* ===== Inventaire : comptage produit par produit, ecarts avec le stock du systeme, comparaison avec l'inventaire precedent =====
+   Base : inventories/<id> = en-tete {ts,by,st:'open'|'done',end,adj,sum} ; invl/<id>/<produit> = ligne {n,c(compte),s(systeme au moment du comptage),k(cout),t} */
+var ivq='',ivf='todo',ivlim=40,ivview=null,ivrf='gap',ivrlim=60,ivLoaded={},ivTried={};
+function ivRound(x){return Math.round((x||0)*100)/100}
+function ivOpen(){return S.inv.find(function(r){return r.st==='open'})}
+function ivRec(id){return S.inv.find(function(r){return r.id===id})}
+function ivLines(id){return S.invl[id]||(S.invl[id]={})}
+function ivSum(L){var s={n:0,d:0,q:0,v:0,neg:0,pos:0,tv:0};
+ Object.keys(L).forEach(function(k){var l=L[k],g=l.c-l.s,v=g*(l.k||0);s.n++;s.tv+=l.c*(l.k||0);if(g){s.d++;s.q+=g;s.v+=v;if(v<0)s.neg+=v;else s.pos+=v}});
+ ['q','v','neg','pos','tv'].forEach(function(k){s[k]=ivRound(s[k])});return s}
+function ivPrev(id){var r=ivRec(id);if(!r)return null;
+ var P=S.inv.filter(function(x){return x.st==='done'&&x.id!==id&&x.ts<r.ts});P.sort(function(a,b){return a.ts<b.ts?1:-1});return P[0]||null}
+function ivStart(){if(ivOpen()){toast('Un inventaire est déjà en cours');return}
+ var r={id:uid(),ts:new Date().toISOString(),by:S.me.name,st:'open'};
+ S.inv.push(r);S.invl[r.id]={};ivview=null;ivf='todo';ivq='';ivlim=40;save();sy('PUT','inventories/'+r.id,r);render()}
+function ivCount(id,mid,val){var L=ivLines(id),m=S.meds.find(function(x){return x.id===mid});if(!m)return false;
+ if(val===''||val==null){if(L[mid]){delete L[mid];sy('DELETE','invl/'+id+'/'+mid);save()}return true}
+ var c=parseInt(val,10);if(isNaN(c)||c<0){toast('Quantité invalide');return false}
+ L[mid]={n:m.name,c:c,s:m.qty||0,k:m.cost||0,t:Date.now()};sy('PUT','invl/'+id+'/'+mid,L[mid]);save();return true}
+function ivCancel(id){S.inv=S.inv.filter(function(r){return r.id!==id});delete S.invl[id];sy('DELETE','inventories/'+id);sy('DELETE','invl/'+id);ivview=null;save();render()}
+/* Terminer : l'ecart (compte - systeme au moment du comptage) est applique au stock ACTUEL, donc les ventes faites depuis ne sont pas perdues */
+function ivFinish(id,apply){var r=ivRec(id),L=ivLines(id),sum=ivSum(L);if(!r||r.st!=='open')return;
+ if(apply)Object.keys(L).forEach(function(k){var l=L[k],g=l.c-l.s,m=S.meds.find(function(x){return x.id===k});
+  if(g&&m){m.qty=(m.qty||0)+g;var q=incOp('meds/'+k,'qty',g);sy(q[0],q[1],q[2])}});
+ r.st='done';r.end=new Date().toISOString();r.adj=apply?1:0;r.sum=sum;sy('PUT','inventories/'+id,r);ivPrune();save();ivview=id;render()}
+function ivPrune(){var keep={},D=S.inv.filter(function(x){return x.st==='done'}).sort(function(a,b){return a.ts<b.ts?1:-1}).slice(0,2);
+ D.forEach(function(x){keep[x.id]=1});var o=ivOpen();if(o)keep[o.id]=1;Object.keys(S.invl).forEach(function(k){if(!keep[k])delete S.invl[k]})}
+/* Charge les lignes d'un inventaire depuis la base (inventaire termine : fige ; en cours : fusion par date de comptage) */
+function ivEnsure(id){var r=ivRec(id),loc=S.invl[id];
+ if(!base()||(loc&&r&&r.st==='done'))return Promise.resolve(loc||{});
+ return J('GET','invl/'+id).then(function(rem){rem=rem||{};var L=S.invl[id]||{};
+  Object.keys(rem).forEach(function(k){if(!L[k]||(rem[k].t||0)>(L[k].t||0))L[k]=rem[k]});S.invl[id]=L;save();return L},
+  function(){ivTried[id]=1;return S.invl[id]||{}})}
+/* Lignes de l'inventaire + comparaison produit par produit avec l'inventaire precedent */
+function ivRows(id){var L=ivLines(id),P=ivPrev(id),PL=P?S.invl[P.id]||null:null;
+ var rows=Object.keys(L).map(function(k){var l=L[k],p=PL&&PL[k]||null,g=l.c-l.s;
+  return {id:k,n:l.n,c:l.c,s:l.s,k:l.k||0,g:g,v:ivRound(g*(l.k||0)),pc:p?p.c:null,pg:p?p.c-p.s:null,dv:p?l.c-p.c:null}});
+ var com=rows.filter(function(x){return x.pc!==null}),cq=0,cv=0;com.forEach(function(x){cq+=x.dv;cv+=x.dv*x.k});
+ return {rows:rows,prev:P,pl:PL,common:com.length,cq:cq,cv:ivRound(cv)}}
+function ivCsv(id){var R=ivRows(id),q=function(t){return '"'+String(t).replace(/"/g,'""')+'"'},n=function(x){return x==null?'':String(x).replace('.',',')};
+ var out=['Produit;Système;Compté;Écart;Coût unitaire;Valeur de l\'écart;Précédent compté;Variation depuis le précédent'];
+ R.rows.sort(function(a,b){return a.n<b.n?-1:1}).forEach(function(x){out.push([q(x.n),x.s,x.c,x.g,n(x.k),n(x.v),n(x.pc),n(x.dv)].join(';'))});
+ return '\ufeff'+out.join('\r\n')}
+/* Sauvegarde / restauration en mode securise : une lecture ou ecriture par collection (la racine est refusee par les regles) */
+var BKK=['meds','users','sales','buys','logins','meta','inventories','invl'];
+function bkRemote(){return Promise.all(BKK.map(function(k){return J('GET',k)})).then(function(a){var r={};BKK.forEach(function(k,i){r[k]=a[i]});return r})}
+function secStrip(o){var c=Object.assign({},o);c.users=JSON.parse(JSON.stringify(o.users||{}));Object.keys(c.users).forEach(function(k){if(c.users[k])delete c.users[k].pin});return c}
+/* ---- affichage ---- */
+function sg(n){return (n>0?'+':n<0?'−':'')+Math.abs(n)}
+function fv(v){return (v>0?'+':v<0?'−':'')+fmt(Math.abs(v))}
+function dtFr(iso){return new Date(iso).toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'})}
+function gcl(n){return n<0?'neg':(n>0?'pos':'')}
+function ivGapTxt(l){if(!l)return '';var g=l.c-l.s;return g===0?'Aucun écart ✓':'Écart : <b class="'+gcl(g)+'">'+sg(g)+'</b> ('+fv(ivRound(g*(l.k||0)))+')'}
+function ivVar(a,b){if(!b)return '';var p=(a-b)/Math.abs(b)*100;return ' <span class="'+gcl(p)+'">('+(p>=0?'+':'')+p.toFixed(0)+' %)</span>'}
+function ivUpd(){var o=ivOpen();if(!o)return;var e=$('#ivp');if(e)e.textContent=Object.keys(ivLines(o.id)).length+' / '+S.meds.length}
+function renderInv(){var el=$('#inventaire');if(!el)return;var op=ivOpen(),vid=ivview&&ivRec(ivview)?ivview:null,h='';
+ if(vid)h=ivReport(vid);else if(op)h=ivCountScreen(op);else h=ivHome();
+ el.innerHTML=h;ivBind(op)}
+function ivHome(){var D=S.inv.filter(function(x){return x.st==='done'}).sort(function(a,b){return a.ts<b.ts?1:-1}),h='';
+ h+='<div class="item"><b>Inventaire</b><div class="meta" style="margin:6px 0 10px">Comptez vos produits un par un, puis comparez avec le stock du système et avec l\'inventaire précédent. Vous pouvez continuer à vendre pendant le comptage.</div><button class="btn" id="ivstart">Démarrer un inventaire</button></div>';
+ if(D.length){var s=D[0].sum||{};h+='<div class="item"><div class="meta">Dernier inventaire : '+dtFr(D[0].end||D[0].ts)+' · '+esc(D[0].by||'')+'</div><div class="line"><span>Produits comptés</span><b>'+(s.n||0)+'</b></div><div class="line"><span>Écart net</span><b class="'+gcl(s.v)+'">'+fv(s.v||0)+'</b></div></div>';
+  h+='<h2 style="font-size:17px;margin:16px 0 8px">Historique</h2>'+D.slice(0,10).map(function(x){var q=x.sum||{};return '<div class="item"><div class="top"><div><b>'+dtFr(x.end||x.ts)+'</b><div class="meta">'+esc(x.by||'')+' · '+(q.n||0)+' produit(s) · '+(q.d||0)+' écart(s) · net '+fv(q.v||0)+(x.adj?' · stock corrigé':'')+'</div></div><button class="btn ghost sm" data-ivv="'+x.id+'">Rapport</button></div></div>'}).join('')}
+ else h+='<div class="empty">Aucun inventaire terminé pour l\'instant.</div>';
+ return h}
+function ivCountScreen(op){var L=ivLines(op.id),tot=S.meds.length,cn=Object.keys(L).length,q=ivq.toLowerCase(),gap=0;
+ Object.keys(L).forEach(function(k){if(L[k].c!==L[k].s)gap++});
+ var h='<div class="item"><div class="top"><div><b>Inventaire en cours</b><div class="meta">Commencé le '+dtFr(op.ts)+' · '+esc(op.by||'')+'</div></div></div><div class="line"><span>Produits comptés</span><b id="ivp">'+cn+' / '+tot+'</b></div><div class="row" style="flex-wrap:wrap;margin-top:8px"><button class="btn sm" id="ivrep">Voir les écarts</button><button class="btn ghost sm danger" id="ivcancel">Annuler l\'inventaire</button></div></div>';
+ var defs=[['todo','À compter ('+(tot-cn)+')'],['done','Comptés ('+cn+')'],['gap','Écarts ('+gap+')'],['all','Tous ('+tot+')']];
+ h+='<input id="ivsearch" type="search" placeholder="Rechercher un produit" value="'+esc(ivq)+'" style="margin:8px 0"><div class="chips">'+defs.map(function(c){return '<button class="chip" data-ivf="'+c[0]+'" aria-pressed="'+(ivf===c[0])+'">'+c[1]+'</button>'}).join('')+'</div>';
+ var F=S.meds.filter(function(m){var l=L[m.id];if(q&&m.name.toLowerCase().indexOf(q)<0)return false;
+  return ivf==='all'||(ivf==='todo'&&!l)||(ivf==='done'&&l)||(ivf==='gap'&&l&&l.c!==l.s)}).sort(function(a,b){return a.name<b.name?-1:1});
+ h+=F.slice(0,ivlim).map(function(m){var l=L[m.id];
+  return '<div class="item"><div class="top"><div><b>'+esc(m.name)+'</b><div class="meta">Stock du système : <b>'+(m.qty||0)+'</b>'+(m.exp?' · Péremption '+dateFr(m.exp):'')+'</div><div class="meta" data-g="'+m.id+'">'+ivGapTxt(l)+'</div></div><input class="ivin" type="number" inputmode="numeric" min="0" step="1" data-c="'+m.id+'" value="'+(l?l.c:'')+'" placeholder="Compté" aria-label="Quantité comptée pour '+esc(m.name)+'" style="width:96px;text-align:right"></div></div>'}).join('');
+ if(!F.length)h+='<div class="empty">'+(ivf==='todo'&&!q?'Tous les produits sont comptés. Touchez « Voir les écarts » pour terminer.':'Aucun produit.')+'</div>';
+ if(F.length>ivlim)h+='<p><button class="btn ghost" id="ivmore">Afficher plus ('+(F.length-ivlim)+' restants)</button></p>';
+ return h}
+function ivReport(vid){var rec=ivRec(vid),R=ivRows(vid),open=rec.st==='open',cur=open||!rec.sum?ivSum(ivLines(vid)):rec.sum,P=R.prev,h='';
+ if(P&&!R.pl&&!ivTried[P.id]){ivTried[P.id]=0;ivEnsure(P.id).then(function(){ivTried[P.id]=1;renderInv()})}
+ if(!S.invl[vid]&&!ivTried[vid]){ivTried[vid]=0;ivEnsure(vid).then(function(){ivTried[vid]=1;renderInv()})}
+ h+='<div class="item"><div class="top"><div><b>Rapport d\'inventaire</b><div class="meta">'+dtFr(rec.ts)+(rec.end?' → '+dtFr(rec.end):' · en cours')+' · '+esc(rec.by||'')+(rec.adj?' · stock corrigé':(open?'':' · stock non corrigé'))+'</div></div></div><div class="row" style="flex-wrap:wrap;margin-top:8px"><button class="btn ghost sm" id="ivback">'+(open?'Retour au comptage':'Retour')+'</button><button class="btn ghost sm" id="ivcsv">Exporter (CSV)</button>'+(open?'<button class="btn sm" id="ivend1">Terminer et corriger le stock</button><button class="btn ghost sm" id="ivend0">Terminer sans corriger</button>':'')+'</div></div>';
+ h+='<h2 style="font-size:17px;margin:16px 0 8px">Écarts par rapport au stock du système</h2><div class="item"><div class="line"><span>Produits comptés</span><b>'+cur.n+'</b></div><div class="line"><span>Produits en écart</span><b>'+cur.d+'</b></div><div class="line"><span>Manque (valeur d\'achat)</span><b class="neg">'+fv(cur.neg)+'</b></div><div class="line"><span>Surplus (valeur d\'achat)</span><b class="pos">'+fv(cur.pos)+'</b></div><div class="line"><span>Écart net</span><b class="'+gcl(cur.v)+'">'+fv(cur.v)+'</b></div><div class="line"><span>Valeur du stock compté</span><b>'+fmt(cur.tv)+'</b></div></div>';
+ h+='<h2 style="font-size:17px;margin:16px 0 8px">Comparaison avec l\'inventaire précédent</h2>';
+ if(!P)h+='<div class="item"><div class="meta">Premier inventaire : il n\'y a rien à comparer pour le moment. Au prochain, vous verrez ici l\'évolution.</div></div>';
+ else{var ps=P.sum||(R.pl?ivSum(R.pl):null);
+  if(!ps)h+='<div class="item"><div class="meta">Inventaire précédent du '+dtFr(P.end||P.ts)+' : '+(ivTried[P.id]?'indisponible sans connexion.':'chargement…')+'</div></div>';
+  else h+='<div class="item"><div class="meta" style="margin-bottom:6px">Précédent : '+dtFr(P.end||P.ts)+' · '+esc(P.by||'')+'</div>'
+   +[['Produits comptés',cur.n,ps.n,0],['Valeur du stock compté',cur.tv,ps.tv,1],['Produits en écart',cur.d,ps.d,0],['Écart net',cur.v,ps.v,1]].map(function(r){return '<div class="line"><span>'+r[0]+'</span><span><b>'+(r[3]?fmt(r[1]):r[1])+'</b> <span class="meta">contre '+(r[3]?fmt(r[2]):r[2])+'</span>'+(r[3]&&r[0]!=='Écart net'?ivVar(r[1],r[2]):'')+'</span></div>'}).join('')
+   +(R.pl?'<div class="meta" style="margin-top:6px">'+R.common+' produit(s) comptés dans les deux inventaires : quantités '+sg(R.cq)+' unité(s), '+fv(R.cv)+' en valeur d\'achat.</div>':'')+'</div>'}
+ var rows=R.rows.slice().sort(function(a,b){return Math.abs(b.v)-Math.abs(a.v)||(a.n<b.n?-1:1)}),ng=rows.filter(function(x){return x.g!==0}).length;
+ var F=ivrf==='gap'?rows.filter(function(x){return x.g!==0}):rows;
+ h+='<h2 style="font-size:17px;margin:16px 0 8px">Détail par produit</h2><div class="chips"><button class="chip" data-ivrf="gap" aria-pressed="'+(ivrf==='gap')+'">Écarts ('+ng+')</button><button class="chip" data-ivrf="all" aria-pressed="'+(ivrf==='all')+'">Tous ('+rows.length+')</button></div>';
+ h+=F.slice(0,ivrlim).map(function(x){return '<div class="item"><b>'+esc(x.n)+'</b><div class="line" style="padding:0"><span class="meta">Système '+x.s+' · Compté '+x.c+'</span><span><b class="'+gcl(x.g)+'">'+(x.g?sg(x.g)+' ('+fv(x.v)+')':'Aucun écart')+'</b></span></div>'
+  +(x.pc!==null?'<div class="meta">Précédent : '+x.pc+' compté'+(x.pg?' (écart '+sg(x.pg)+')':'')+' · variation depuis : <b class="'+gcl(x.dv)+'">'+sg(x.dv)+'</b></div>':'')+'</div>'}).join('');
+ if(!F.length)h+='<div class="empty">'+(rows.length?'Aucun écart : le stock compté correspond au système.':'Aucun produit compté.')+'</div>';
+ if(F.length>ivrlim)h+='<p><button class="btn ghost" id="ivrmore">Afficher plus ('+(F.length-ivrlim)+' restants)</button></p>';
+ return h}
+function ivBind(op){var g=function(id,f){var e=$(id);if(e)e.onclick=f};
+ g('#ivstart',ivStart);
+ document.querySelectorAll('[data-ivv]').forEach(function(b){b.onclick=function(){ivview=b.dataset.ivv;ivrf='gap';ivrlim=60;renderInv()}});
+ g('#ivback',function(){ivview=null;renderInv()});
+ g('#ivrep',function(){ivview=op.id;ivrf='gap';ivrlim=60;renderInv()});
+ g('#ivcancel',function(){if(confirm('Annuler cet inventaire ? Les quantités déjà comptées seront perdues. Le stock ne change pas.'))ivCancel(op.id)});
+ g('#ivmore',function(){ivlim+=40;renderInv()});g('#ivrmore',function(){ivrlim+=60;renderInv()});
+ g('#ivcsv',function(){dl('inventaire-'+new Date().toISOString().slice(0,10)+'.csv',ivCsv(ivview))});
+ [['#ivend1',1],['#ivend0',0]].forEach(function(p){g(p[0],function(){var L=ivLines(ivview),s=ivSum(L),un=S.meds.length-s.n;
+  if(!s.n){toast('Comptez au moins un produit');return}
+  if(confirm('Terminer l\'inventaire ?\n\n'+s.n+' produit(s) compté(s)'+(un?' ; les '+un+' autres ne sont pas modifiés':'')+'.\n'+s.d+' écart(s).\n\n'+(p[1]?'Le stock du système sera corrigé pour les produits en écart.':'Le stock du système ne sera PAS modifié.')))ivFinish(ivview,!!p[1])})});
+ var s=$('#ivsearch');if(s)s.oninput=function(){ivq=s.value;ivlim=40;var pos=s.selectionStart;renderInv();var n=$('#ivsearch');if(n){n.focus();try{n.setSelectionRange(pos,pos)}catch(e){}}};
+ document.querySelectorAll('[data-ivf]').forEach(function(b){b.onclick=function(){ivf=b.dataset.ivf;ivlim=40;renderInv()}});
+ document.querySelectorAll('[data-ivrf]').forEach(function(b){b.onclick=function(){ivrf=b.dataset.ivrf;ivrlim=60;renderInv()}});
+ if(op&&!ivview)document.querySelectorAll('[data-c]').forEach(function(inp){
+  inp.onchange=function(){var id=inp.dataset.c,ok=ivCount(op.id,id,inp.value.trim());if(!ok){var l=ivLines(op.id)[id];inp.value=l?l.c:''}
+   var t=document.querySelector('[data-g="'+id+'"]');if(t)t.innerHTML=ivGapTxt(ivLines(op.id)[id]);ivUpd()};
+  inp.onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();var a=Array.prototype.slice.call(document.querySelectorAll('#inventaire [data-c]')),i=a.indexOf(inp);if(a[i+1])a[i+1].focus();else inp.blur()}}});
+ if(op&&!ivview&&!ivLoaded[op.id]){ivLoaded[op.id]=1;ivEnsure(op.id).then(function(){if(ivOpen()&&!ivview&&!document.activeElement.dataset.c)renderInv()})}}
+/* ===== fin inventaire ===== */
+function render(){if(!S.me)return;renderStock();renderSell();renderHist();if(adm()){renderBuys();renderInv();renderBilan();renderTeam()}}
+lock();var inv=/invite=/.test(location.hash);checkInvite();setSt(true);if(!inv&&base())pull(true).then(function(){if(!S.me)renderLogin()});
+
+if('serviceWorker' in navigator&&/^https?:/.test(location.protocol)){window.addEventListener('load',function(){try{navigator.serviceWorker.register('sw.js').catch(function(){})}catch(e){}})}
+</script>
+</body>
+</html>

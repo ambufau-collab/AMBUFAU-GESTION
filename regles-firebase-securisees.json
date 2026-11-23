@@ -1,0 +1,86 @@
+{
+ "rules": {
+  ".read": false,
+  ".write": false,
+  "p": {
+   "$k": {
+    "members": {
+     ".read": "auth != null && root.child('p/'+$k+'/members/'+auth.uid+'/r').val() === 'admin' && root.child('licenses/'+$k+'/x').val() + 2592000000 > now",
+     "$uid": {
+      ".read": "auth != null && auth.uid === $uid",
+      ".write": "(auth != null && root.child('p/'+$k+'/members/'+auth.uid+'/r').val() === 'admin' && root.child('licenses/'+$k+'/x').val() > now) || (auth != null && auth.uid === $uid && !data.exists() && (root.child('licenses/'+$k+'/x').val() > now) && (!root.child('p/'+$k+'/members').exists() && newData.child('r').val() === 'admin' || (newData.child('t').exists() && root.child('p/'+$k+'/invites/'+newData.child('t').val()+'/u').val() === newData.child('u').val() && root.child('p/'+$k+'/invites/'+newData.child('t').val()+'/r').val() === newData.child('r').val() && root.child('p/'+$k+'/invites/'+newData.child('t').val()+'/x').val() > now)))",
+      ".validate": "newData.hasChildren(['u','r']) && (newData.child('r').val() === 'admin' || newData.child('r').val() === 'cashier')"
+     }
+    },
+    "invites": {
+     "$t": {
+      ".write": "(auth != null && root.child('p/'+$k+'/members/'+auth.uid+'/r').val() === 'admin' && root.child('licenses/'+$k+'/x').val() > now) || (auth != null && !newData.exists() && root.child('p/'+$k+'/members/'+auth.uid+'/t').val() === $t)",
+      ".validate": "newData.hasChildren(['u','r','x'])"
+     }
+    },
+    "users": {
+     ".read": "auth != null && root.child('p/'+$k+'/members/'+auth.uid).exists() && root.child('licenses/'+$k+'/x').val() + 2592000000 > now",
+     ".write": "auth != null && root.child('p/'+$k+'/members/'+auth.uid+'/r').val() === 'admin' && root.child('licenses/'+$k+'/x').val() > now"
+    },
+    "meds": {
+     ".read": "auth != null && root.child('p/'+$k+'/members/'+auth.uid).exists() && root.child('licenses/'+$k+'/x').val() + 2592000000 > now",
+     ".write": "auth != null && root.child('p/'+$k+'/members/'+auth.uid+'/r').val() === 'admin' && root.child('licenses/'+$k+'/x').val() > now",
+     "$id": {
+      "qty": {
+       ".write": "auth != null && root.child('p/'+$k+'/members/'+auth.uid).exists() && root.child('licenses/'+$k+'/x').val() > now",
+       ".validate": "newData.isNumber()"
+      }
+     }
+    },
+    "sales": {
+     ".read": "auth != null && root.child('p/'+$k+'/members/'+auth.uid).exists() && root.child('licenses/'+$k+'/x').val() + 2592000000 > now",
+     ".write": "auth != null && root.child('p/'+$k+'/members/'+auth.uid+'/r').val() === 'admin' && root.child('licenses/'+$k+'/x').val() > now",
+     "$id": {
+      ".write": "auth != null && root.child('p/'+$k+'/members/'+auth.uid).exists() && root.child('licenses/'+$k+'/x').val() > now && !data.exists()"
+     }
+    },
+    "buys": {
+     ".read": "auth != null && root.child('p/'+$k+'/members/'+auth.uid+'/r').val() === 'admin' && root.child('licenses/'+$k+'/x').val() + 2592000000 > now",
+     ".write": "auth != null && root.child('p/'+$k+'/members/'+auth.uid+'/r').val() === 'admin' && root.child('licenses/'+$k+'/x').val() > now"
+    },
+    "logins": {
+     ".read": "auth != null && root.child('p/'+$k+'/members/'+auth.uid+'/r').val() === 'admin' && root.child('licenses/'+$k+'/x').val() + 2592000000 > now",
+     ".write": "auth != null && root.child('p/'+$k+'/members/'+auth.uid+'/r').val() === 'admin' && root.child('licenses/'+$k+'/x').val() > now",
+     "$id": {
+      ".write": "auth != null && root.child('p/'+$k+'/members/'+auth.uid).exists() && root.child('licenses/'+$k+'/x').val() > now && !data.exists()"
+     }
+    },
+    "inventories": {
+     ".read": "auth != null && root.child('p/'+$k+'/members/'+auth.uid+'/r').val() === 'admin' && root.child('licenses/'+$k+'/x').val() + 2592000000 > now",
+     ".write": "auth != null && root.child('p/'+$k+'/members/'+auth.uid+'/r').val() === 'admin' && root.child('licenses/'+$k+'/x').val() > now"
+    },
+    "invl": {
+     ".read": "auth != null && root.child('p/'+$k+'/members/'+auth.uid+'/r').val() === 'admin' && root.child('licenses/'+$k+'/x').val() + 2592000000 > now",
+     ".write": "auth != null && root.child('p/'+$k+'/members/'+auth.uid+'/r').val() === 'admin' && root.child('licenses/'+$k+'/x').val() > now"
+    },
+    "meta": {
+     ".read": "auth != null && root.child('p/'+$k+'/members/'+auth.uid).exists() && root.child('licenses/'+$k+'/x').val() + 2592000000 > now",
+     ".write": "auth != null && root.child('p/'+$k+'/members/'+auth.uid+'/r').val() === 'admin' && root.child('licenses/'+$k+'/x').val() > now",
+     "no": {
+      ".write": "auth != null && root.child('p/'+$k+'/members/'+auth.uid).exists() && root.child('licenses/'+$k+'/x').val() > now",
+      ".validate": "newData.isNumber()"
+     },
+     "v": {
+      ".write": "auth != null && root.child('p/'+$k+'/members/'+auth.uid).exists() && root.child('licenses/'+$k+'/x').val() > now",
+      ".validate": "newData.isNumber()"
+     }
+    }
+   }
+  },
+  "licenses": {
+   ".read": "auth != null && auth.uid === 'REMPLACER_PAR_UID_FOURNISSEUR'",
+   ".write": "auth != null && auth.uid === 'REMPLACER_PAR_UID_FOURNISSEUR'",
+   "$k": {
+    "x": {
+     ".read": "auth != null && root.child('p/'+$k+'/members/'+auth.uid).exists()",
+     ".validate": "newData.isNumber()"
+    }
+   }
+  }
+ }
+}
