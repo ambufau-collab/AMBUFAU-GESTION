@@ -206,7 +206,7 @@ label{display:block;font-size:14px;font-weight:600;margin:10px 0 4px}
 
 <script>
 /* CONFIGURATION DU FOURNISSEUR : adresse de votre base Firebase et cle API Web. Si url est vide, chaque pharmacie utilise sa propre base (Reglages). */
-var DEF={url:'',api:''};
+var DEF={url:'https://gestion-pharmacy-amf-default-rtdb.europe-west1.firebasedatabase.app',api:'AIzaSyB7yOXBi6gFgANEA5kNA-dFQQkJCEfmE8Y'};
 var S={meds:[],sales:[],buys:[],logins:[],users:[],me:null,cur:'USD',rate:2800,no:0,shop:{name:'',addr:''},appUrl:'',db:null,q:[],lastBk:'',lp:{},act:{},inv:[],invl:{}},client='',cphone='',cart=[],filter='all',editId=null;
 var $=function(s){return document.querySelector(s)};
 try{var raw=localStorage.getItem('pharma-v1');if(raw){var p=JSON.parse(raw);S.meds=p.meds||[];S.sales=p.sales||[];S.buys=p.buys||[];S.logins=p.logins||[];S.cur=p.cur==='CDF'?'CDF':'USD';S.rate=p.rate||2800;S.no=p.no||0;S.shop=p.shop||S.shop;S.users=p.users||[];S.appUrl=p.appUrl||'';S.db=p.db||null;S.q=p.q||[];S.lastBk=p.lastBk||'';S.lp=p.lp||{};S.act=p.act||{};S.inv=p.inv||[];S.invl=p.invl||{}}}catch(e){}
